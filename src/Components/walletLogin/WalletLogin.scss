@@ -1,0 +1,17 @@
+.Wallet-login .btn-3d {
+    display: inline-block;
+    padding: 12px 35px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(145deg, #e6c76b, #a28248);
+    border: none;
+    border-radius: 20px;
+    // box-shadow: 5px 5px 15px #925a1d, -5px -5px 15px #ffbc74;
+    transition: all 0.3s ease-in;
+  }
+  
+  .btn-3d:hover {
+    transform: translate(-5px);
+    // box-shadow: 10px 10px 20px #92631d, -10px -10px 20px #ffd174;
+  }

@@ -1,0 +1,17 @@
+.marketplace .btn-3d {
+    display: inline-block;
+    padding: 4px 22px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #929292, #3d3d3d);
+
+  }
+
+  :hover:btn-3d{
+    background: linear-gradient(145deg, #737373, #151515);
+    
+
+  }

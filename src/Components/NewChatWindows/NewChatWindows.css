@@ -1,0 +1,106 @@
+.group:hover .group-hover\:fill-primary-1 {
+    fill: #4667bc;
+  }
+  .bg-n-1 {
+    background-color: #ffffff;
+  }
+  .bg-n-2 {
+    background-color: #f7f8fa;
+  }
+  .bg-n-3 {
+    background-color: #eff0f2;
+  }
+  .bg-n-5 {
+    background-color: #141618;
+  }
+  .bg-n-7 {
+    background-color: #232627;
+  }
+  .text-n-1 {
+    color: #ffffff;
+  }
+  .text-n-3 {
+    color: #9ea3ab;
+  }
+  .text-n-4 {
+    color: #6c727c;
+  }
+  .text-n-4\/50 {
+    color: rgba(108, 114, 124, 0.5);
+  }
+  .text-n-6 {
+    color: #444444;
+  }
+  .dark\:text-n-1 {
+    color: #ffffff;
+  }
+  .dark\:text-n-3 {
+    color: #9ea3ab;
+  }
+  .dark\:text-n-4 {
+    color: #6c727c;
+  }
+  .dark\:text-n-4\/50 {
+    color: rgba(108, 114, 124, 0.5);
+  }
+  .fill-n-3 {
+    fill: #9ea3ab;
+  }
+  .fill-primary-1 {
+    fill: #4667bc;
+  }
+  .border-n-2 {
+    border-color: #f7f8fa;
+  }
+  .btn-dark {
+    background-color: #141618;
+    color: #ffffff;
+    transition: background-color 0.2s;
+  }
+  .btn-dark:hover {
+    background-color: #232627;
+  }
+  .btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  .btn-white {
+    background-color: #ffffff;
+    color: #444444;
+    transition: background-color 0.2s;
+  }
+  .btn-white:hover {
+    background-color: #eff0f2;
+  }
+  .caption1 {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  /* .shadow-[0_0_0_0.25rem_#FEFEFE] {
+    box-shadow: 0 0 0 0.25rem #fefefe;
+  }
+  .dark\:shadow-[0_0_0_0.25rem_#232627] {
+    box-shadow: 0 0 0 0.25rem #232627;
+  }
+  .shadow-[0_0.3125rem_0.75rem_-0.25rem_#C3CAD2] {
+    box-shadow: 0 0.3125rem 0.75rem -0.25rem #c3cad2;
+  }
+  .animate-\[loaderDots_0.6s_0s_infinite_alternate\] {
+    animation: loaderDots 0.6s 0s infinite alternate;
+  }
+  .animate-\[loaderDots_0.6s_0.3s_infinite_alternate\] {
+    animation: loaderDots 0.6s 0.3s infinite alternate;
+  }
+  .animate-\[loaderDots_0.6s_0.6s_infinite_alternate\] {
+    animation: loaderDots 0.6s 0.6s infinite alternate;
+  } */
+  .ui-open\:z-10 {
+    z-index: 10;
+  }
+  .ui-open\:bg-n-4\/50 {
+    background-color: rgba(108, 114, 124, 0.5);
+  }
+  .dark\:ui-open\:bg-n-1\/20 {
+    background-color: rgba(255, 255, 255, 0.2);
+  }

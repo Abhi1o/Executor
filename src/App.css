@@ -1,5 +1,7 @@
+
 .App {
   text-align: center;
+  height: 100vh;
 }
 
 .App-logo {
@@ -36,3 +38,215 @@
     transform: rotate(360deg);
   }
 }
+/* App.css */
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.content.dark {
+  background-color: #303030;
+  color: #ffffff;
+}
+
+.content.light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+
+.sidebar {
+  width: 260px;
+  transition: width 0.3s;
+}
+
+.sidebar.close {
+  width: 80px;
+}
+
+.main-content {
+  flex-grow: 1;
+  transition: margin-left 0.3s;
+  color: var(--text-color);
+}
+
+.main-content.expanded {
+  margin-left: 260px; /* Adjust based on the sidebar width */
+}
+
+.main-content.collapsed {
+  margin-left: 240px; /* Adjust based on the sidebar width */
+}
+
+.top-navbar {
+  height: 60px;
+  background-color: var(--white-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 0 2px var(--grey-color-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.content {
+  flex-grow: 1;
+ 
+  /* overflow-y: auto; */
+  margin: 20px 20px;
+  border-radius: 1.2rem;
+}
+.sidebar + .main-content {
+  margin-left: 19rem;
+  /* padding: 0rem 1.3rem; */
+  overflow: hidden;
+ 
+}
+
+.sidebar.close + .main-content {
+  margin-left: 96px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    z-index: 1000;
+    left: -260px;
+    top: 0;
+    height: 100%;
+    width: 260px;
+  }
+
+  .sidebar.close {
+    left: 0;
+  }
+
+  .main-content.expanded,
+  .main-content.collapsed {
+    margin-left: 0;
+  }
+}
+
+/* .dashboard {
+padding: 20px;
+}
+
+.header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+}
+
+.date-section {
+display: flex;
+align-items: center;
+}
+
+.date-section span:first-child {
+font-size: 24px;
+font-weight: bold;
+margin-right: 10px;
+}
+
+.date-section div {
+display: flex;
+flex-direction: column;
+}
+
+.tasks-button {
+background-color: #FF7043;
+color: white;
+border: none;
+padding: 10px 20px;
+border-radius: 5px;
+}
+
+.header-icons span {
+margin-left: 10px;
+cursor: pointer;
+}
+
+.greeting {
+margin-bottom: 20px;
+}
+
+.greeting h2 {
+font-size: 24px;
+margin: 0;
+}
+
+.greeting p {
+margin: 5px 0 0;
+}
+
+.dashboard-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 20px;
+}
+
+.card {
+background-color: #fff;
+border-radius: 10px;
+padding: 20px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.visa-card {
+grid-column: span 2;
+}
+
+.income-card, .paid-card, .lock-card, .days-card, .stocks-card, .profits-card, .activity-card, .business-card, .verification-card, .rating-card {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.actions {
+display: flex;
+justify-content: space-between;
+margin-top: 20px;
+}
+
+.receive-button, .send-button, .edit-button, .tasks-button, .card button {
+padding: 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+.receive-button {
+background-color: black;
+color: white;
+}
+
+.send-button {
+background-color: white;
+border: 1px solid black;
+color: black;
+}
+
+.edit-button {
+background-color: transparent;
+color: #FF7043;
+}
+
+.card button {
+background-color: #FF7043;
+color: white;
+}
+
+.footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 20px;
+} */
+
+
+
