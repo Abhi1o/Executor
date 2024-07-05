@@ -91,6 +91,7 @@
     ]
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.11.0",

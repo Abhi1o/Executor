@@ -4,8 +4,8 @@ import { cn } from "../../lib/utils";
 import { Link, useNavigate } from "react-router-dom";
 import blue from "../../Assets/Image/people-building-metaverse-removebg-preview.png";
 import user from "../../Assets/Image/user.png";
-import { toast} from "sonner";
-import {BorderBeam } from "../../magicui/border-beam";
+import { Toaster, toast } from 'sonner'
+import { BorderBeam } from "../../magicui/border-beam";
 import AnimatedGridPattern from "../../magicui/animated-grid-pattern";
 import ShimmerButton from "../../magicui/shimmer-button";
 interface UserInfoPageProps {
@@ -20,16 +20,18 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({ onNext }) => {
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [answer, setAnswer] = useState("");
 
-
   const handleContinue = () => {
     // Validate that both question and answer are filled out
-    if (selectedQuestion && answer && password && walletname) {
+    if (password && walletname) {
       onNext();
+      localStorage.setItem("walletname", walletname);
+      localStorage.setItem("password", password);
       // toast.success("Wallet created successfully");
       navigate("/home");
     } else {
       // alert to pell all details
-      alert("Please fill out all details");
+      // alert("Please fill out all details");
+      toast.error('Please fill out all details')
       // toast.error("Please fill out all details");
     }
   };
@@ -139,7 +141,7 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({ onNext }) => {
                 </div> */}
 
                 {/* Security Question Dropdown */}
-                <div className="mb-6">
+                {/* <div className="mb-6">
                   <label
                     className="block text-gray-700 text-sm mb-2"
                     htmlFor="securityQuestion"
@@ -165,10 +167,10 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({ onNext }) => {
                       What is the name of your favorite teacher?
                     </option>
                   </select>
-                </div>
+                </div> */}
 
                 {/* Answer Input */}
-                <div className="mb-6">
+                {/* <div className="mb-6">
                   <label
                     className="block text-gray-700 text-sm  mb-2"
                     htmlFor="answer"
@@ -183,34 +185,38 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({ onNext }) => {
                     value={answer}
                     onChange={(e)=>setAnswer(e.target.value)}
                   />
-                </div>
+                </div> */}
 
                 {/* Continue Button */}
-                <div className="flex items-center flex-row-reverse justify-between mt-5">
-                  {/* <button
-                    onClick={handleContinue}
-                    className="bg-green-500 hover:bg-green-700 btn-3d text-white font-bold py-1 px-5  focus:outline-none focus:shadow-outline"
+                <div
+                  className="shadow-md py-2 mt-12 relative z-10 rounded-xl text-center cursor-pointer flex items-center justify-center"
+                  onClick={handleContinue}
+                >
+                  <button
+                    className="py-1 px-5 focus:outline-none focus:shadow-outline text-center text-sm font-medium leading-none tracking-tight text-black dark:from-white dark:to-slate-900/10 lg:text-lg"
                     type="button"
                   >
                     Next
-                  </button> */}
-                                      <ShimmerButton className="shadow-2xl " onClick={handleContinue}>
-                    <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                  </button>
+                  <BorderBeam size={90} duration={12} delay={9} />
+                </div>
+                {/* <Link to="" className="relative z-10 rounded-2xl "onClick={handleContinue}>
+                  <button className=" " >
+                    <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-black dark:from-white dark:to-slate-900/10 lg:text-lg">
                       Next
                     </span>
-                  </ShimmerButton>
+                  </button>
                   
-
-                </div>
+                  </Link> */}
               </form>
               <BorderBeam size={250} duration={12} delay={9} />
             </div>
           </div>
         </div>{" "}
+        <Toaster richColors position="top-right"  />
       </div>
     </>
   );
- 
 };
 
 export default UserInfoPage;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigationType, useLocation } from 'react-router-dom';
 import OnboardingPage2 from "./pages/OnboardingPage3/OnboardingPage2";
-
+import { Toaster, toast } from 'sonner'
 import './App.css';
 
 import ProfilePage from './pages/Profilepage/ProfilePage';
@@ -16,6 +16,8 @@ import Home from './Components/Main/Main';
 import ChatWindow from './Components/NewChatWindows/ChatWindow';
 import MarketPlace from './Components/MarketPlace/MarketPlace';
 import NewChatWindows from './Components/NewChatWindows/NewChatWindows';
+import { BorderBeam } from './magicui/border-beam';
+import ChatPage from './Components/NewChatWindows/UiChatWindow';
 
 const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(false);
@@ -57,6 +59,7 @@ const App: React.FC = () => {
 
   return (
     <Routes>
+      
       {!isOnboardingComplete && (
         <>
           <Route path="/" element={<Navigate to={`/onboarding${onboardingStep}`} />} />
@@ -98,11 +101,13 @@ const MainApp: React.FC = () => {
       <div className={`main-content content ${isSidebarOpen ? 'expanded' : 'collapsed'} ${isDarkMode ? "dark" : "light"}`}>
         <Routes>
           <Route path="/home" element={<Home />} />
-          <Route path="/chat" element={<ChatWindow />} />
+          {/* <Route path="/chat" element={<ChatWindow />} /> */}
+          <Route path="/chat" element={<ChatPage/>} />
           <Route path="/marketplace" element={<MarketPlace />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/" element={<Navigate to="/home" />} />
         </Routes>
+        {/* <BorderBeam size={350} duration={12} delay={9} /> */}
       </div>
     </div>
   );

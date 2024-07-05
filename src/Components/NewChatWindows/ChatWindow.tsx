@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Document } from '@langchain/core/documents';
+import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Chat from './Chat';
 import EmptyChat from './EmptyChat';
-import crypto from 'crypto';
 import { toast } from 'sonner';
 import { getSuggestions } from '../../lib/actions';
 
-const CustomError = ({ statusCode }) => (
+const Error = ({statusCode}:{ statusCode : number }) => (
   <div className="flex flex-col items-center justify-center min-h-screen">
     <p className="dark:text-white/70 text-black/70 text-sm">
       {statusCode === 404 ? 'Page Not Found' : 'Failed to connect to the server. Please try again later.'}
@@ -205,15 +205,21 @@ const loadMessages = async (
   setIsMessagesLoaded(true);
 };
 
+const generateRandomBytes = (length: number): string => {
+  const array = new Uint8Array(length);
+  window.crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+};
+
 const ChatWindow = ({ id }: { id?: string }) => {
-  const searchParams = useSearchParams();
-  const initialMessage = searchParams.get('q');
+  const location = useLocation();
+  const initialMessage = new URLSearchParams(location.search).get('q');
 
   const [chatId, setChatId] = useState<string | undefined>(id);
   const [newChatCreated, setNewChatCreated] = useState(false);
 
   const [hasError, setHasError] = useState(false);
-  const [isReady, setIsReady] = useState(false);
+  const [isReady, setIsReady] = useState(true);
 
   const [isWSReady, setIsWSReady] = useState(false);
   const ws = useSocket(
@@ -252,7 +258,7 @@ const ChatWindow = ({ id }: { id?: string }) => {
     } else if (!chatId) {
       setNewChatCreated(true);
       setIsMessagesLoaded(true);
-      setChatId(crypto.randomBytes(20).toString('hex'));
+      setChatId(generateRandomBytes(20));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -278,7 +284,7 @@ const ChatWindow = ({ id }: { id?: string }) => {
     let recievedMessage = '';
     let added = false;
 
-    const messageId = crypto.randomBytes(7).toString('hex');
+    const messageId = generateRandomBytes(7);
 
     ws?.send(
       JSON.stringify({

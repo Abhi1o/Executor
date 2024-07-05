@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import ShimmerButton from "../../magicui/shimmer-button";
 import AnimatedGridPattern from "../../magicui/animated-grid-pattern";
+import { BorderBeam } from "../../magicui/border-beam";
 
 interface Onboarding3Props {
   onNext: () => void;
@@ -39,22 +40,23 @@ const Onboarding3:React.FC<Onboarding3Props> = ({ onNext }) => {
               />
               <div className="text-center w-[900px]">
                 <h2 className="text-2xl text-slate-900 font-semibold mb-8">
-                Configure Your Core Agents
+                Configuring Core Agents
                 </h2>
                 <p className=" text-gray-500 mb-16  max-w-[600px] m-auto ">
-                Configure the core agents that are essential for the primary operations of your AI system. These agents will manage the main functionalities, ensuring your system's core capabilities are up and running.
+                We're now configuring the core agents essential for your AI system's primary operations. These agents are being automatically set up to manage the main functionalities, ensuring your system's core capabilities are ready to use without any manual setup required.
 
 
                 </p>
                 <div className="flex justify-center items-center w-full mb-12">
                   {/* <button className="text-green-600">Skip</button> */}
                   {/* <Link to="/onboarding5"><button className="btn-3d zoomin-scale-button">Get Started</button></Link>  */}
-                  <Link to="/onboarding5">
+                  <Link to="/onboarding5" className="relative z-10 rounded-3xl">
                     <ShimmerButton className="shadow-2xl">
-                      <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                      <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-black from-white dark:to-slate-900/10 lg:text-lg">
                         Get Started
                       </span>
                     </ShimmerButton>
+                    <BorderBeam size={50} duration={12} delay={9} />
                   </Link>
                 </div>
               </div>

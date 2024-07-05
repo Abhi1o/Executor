@@ -9,6 +9,7 @@ import chatcpt from "../../Assets/Image/Chat_Gpt_Database-removebg-preview.png";
 import { Link } from "react-router-dom";
 import ShimmerButton from "../../magicui/shimmer-button";
 import AnimatedGridPattern from "../../magicui/animated-grid-pattern";
+import { BorderBeam } from "../../magicui/border-beam";
 interface Onboarding1Props {
   onNext: () => void;
 }
@@ -37,12 +38,11 @@ const Onboarding1:React.FC<Onboarding1Props> = ({ onNext }) => {
               />
               <div className="text-center w-[900px]">
                 <h2 className="text-2xl text-slate-900 font-semibold mb-8 ">
-                Create and Secure Your Wallet
-
+                Creating and Securing Your Wallet
 
                 </h2>
                 <p className="text-gray-500 mb-16  max-w-[600px] m-auto ">
-                 Set up your digital wallet, a vital tool for managing your assets securely. You will be guided through the process of creating a new wallet, which is essential for handling transactions, storing cryptocurrencies, and more.
+                We're in the process of creating a secure digital wallet for you. This vital tool for managing your assets is being set up automatically. The system is handling the entire process, from wallet creation to implementing security measures, ensuring a safe environment for your transactions and cryptocurrency storage.
 
 
                 </p>
@@ -50,15 +50,16 @@ const Onboarding1:React.FC<Onboarding1Props> = ({ onNext }) => {
                   <button className="text-black ">
                     Skip
                   </button>
-                  <Link to="/onboarding4">
+                  <Link to="/onboarding4" className="relative z-10 rounded-3xl">
                     {/* <button className="btn-3d  zoomin-scale-button">
                       Next
                     </button> */}
                     <ShimmerButton className="shadow-2xl">
-                      <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                      <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-black from-white dark:to-slate-900/10 lg:text-lg">
                         Next
                       </span>
                     </ShimmerButton>
+                    <BorderBeam  size={50} duration={12} delay={9} />
                   </Link>
                 </div>
               </div>

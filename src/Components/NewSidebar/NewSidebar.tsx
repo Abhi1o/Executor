@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from "../../Assets/Image/logo-svg.png";
 import avatar from "../../Assets/Image/avatar.webp";
+import profile from "../../Assets/Image/Young_Person-removebg-preview.png";
 import "./NewSidebar.css"
 interface NewSidebarProps {
   isOpen: boolean;
@@ -14,6 +15,16 @@ const NewSidebar: React.FC<NewSidebarProps> = ({ isOpen, onToggleSidebar, toggle
   const [activeTab, setActiveTab] = useState(location.pathname);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isSidebarClosed, setIsSidebarClosed] = useState(window.innerWidth < 768);
+   // Get wallet name from local storage
+   const [walletName, setWalletName] = useState("");
+
+   useEffect(() => {
+     const storedWalletName = localStorage.getItem("walletname");
+     console.log(storedWalletName);
+     if (storedWalletName) {
+       setWalletName(storedWalletName);
+     }
+   }, []);
 
   const toggleSidebar = () => {
     setIsSidebarClosed(!isSidebarClosed);
@@ -263,14 +274,14 @@ const NewSidebar: React.FC<NewSidebarProps> = ({ isOpen, onToggleSidebar, toggle
               <div className="profile-detail">
                 <div className="relative w-10 h-10">
                   <div className="profile-image">
-                    <img src={avatar} alt="Avatar" />
+                    <img src={profile} alt="Avatar aspect-square" />
                     <div className="status-indicator"></div>
                   </div>
                 </div>
                 {!isSidebarClosed && (
                   <div className="profile-info">
-                    <div className="profile-name">Tran Mau Tri Tam</div>
-                    <div className="profile-email">tam@ui8.net</div>
+                    <div className="profile-name">{walletName}</div>
+                    {/* <div className="profile-email">tam@ui8.net</div> */}
                   </div>
                 )}
                 {/* {!isSidebarClosed && <div className="profile-status">Free</div>} */}
@@ -286,9 +297,9 @@ const NewSidebar: React.FC<NewSidebarProps> = ({ isOpen, onToggleSidebar, toggle
 
           <div className="theme-switcher">
             <button
-              className={`theme-button ${isDarkMode ? "active" : ""}`}
+              className={`theme-button ${!isDarkMode ? "active" : ""}`}
               onClick={ontoggleDarkMode}
-              id="Dark"
+              id="Light"
             ><svg
                 width="24"
                 height="24"
@@ -297,13 +308,14 @@ const NewSidebar: React.FC<NewSidebarProps> = ({ isOpen, onToggleSidebar, toggle
               >
                 <path d="M12 19a1 1 0 0 1 1 1h0v2a1 1 0 1 1-2 0h0v-2a1 1 0 0 1 1-1zm-4.979-2.017a1 1 0 0 1 .083 1.32l-.083.094-1.414 1.414a1 1 0 0 1-1.497-1.32l.083-.094 1.414-1.414a1 1 0 0 1 1.414 0zm11.372 0l1.414 1.414a1 1 0 1 1-1.414 1.414l-1.414-1.414a1 1 0 0 1 1.414-1.414zM12 6a6 6 0 1 1 0 12 6 6 0 1 1 0-12zm-8 5a1 1 0 1 1 0 2H2a1 1 0 1 1 0-2h2zm18 0a1 1 0 1 1 0 2h0-2a1 1 0 1 1 0-2h0zM5.513 4.11l.094.083 1.414 1.414a1 1 0 0 1-1.32 1.497l-.094-.083-1.414-1.414a1 1 0 0 1 1.32-1.497zm14.294.083a1 1 0 0 1 0 1.414l-1.414 1.414a1 1 0 0 1-1.414-1.414l1.414-1.414a1 1 0 0 1 1.414 0zM12 1a1 1 0 0 1 .993.883L13 2v2a1 1 0 0 1-1.993.117L11 4V2a1 1 0 0 1 1-1z"></path>
               </svg>
-              {!isSidebarClosed && "Light"}
+              {!isSidebarClosed && "Dark"}
               
             </button>
             <button
-              className={`theme-button ${!isDarkMode ? "active" : ""}`}
+              className={`theme-button ${isDarkMode ? "active" : ""}`}
               onClick={ontoggleDarkMode}
-              id="Light"
+              id="Dark"
+              
             >
               <svg
                 width="24"
@@ -313,7 +325,7 @@ const NewSidebar: React.FC<NewSidebarProps> = ({ isOpen, onToggleSidebar, toggle
               >
                 <path d="M7.744 1.089C3.672 2.93 1 6.991 1 11.538 1 17.868 6.132 23 12.462 23c4.547 0 8.608-2.672 10.449-6.744.38-.84-.483-1.703-1.323-1.323-1.213.548-2.532.836-3.894.836-5.226 0-9.462-4.236-9.462-9.462 0-1.362.287-2.682.836-3.894.38-.84-.483-1.703-1.323-1.323zM6.335 4.325l.078-.066-.003.018a11.53 11.53 0 0 0-.179 2.029c0 6.33 5.132 11.462 11.462 11.462l.411-.007c.41-.014.816-.051 1.218-.108l.418-.068-.065.079C17.914 19.737 15.303 21 12.462 21 7.236 21 3 16.764 3 11.538c0-2.841 1.263-5.452 3.335-7.213z"></path>
               </svg>
-              {!isSidebarClosed && "Dark"}
+              {!isSidebarClosed && "Light"}
             </button>
           </div>
         </div>

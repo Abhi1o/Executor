@@ -82,12 +82,13 @@ const WelcomePage = ({onNext }:WelcomePageProps) => {
               efficiency. Focus on what matters while our AI streamlines your
               workflow.
             </p>
-            <Link to="/onboarding2">
+            <Link to="/onboarding2" className="relative z-10 rounded-3xl">
               <ShimmerButton className="shadow-2xl">
-                <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
+                <span className="whitespace-pre-wrap text-center text-sm font-medium leading-none tracking-tight text-black dark:from-white dark:to-slate-900/10 lg:text-lg">
                   Get started
                 </span>
               </ShimmerButton>
+              <BorderBeam size={90} duration={12} delay={9} />
             </Link>
           </div>
           <AnimatedGridPattern
