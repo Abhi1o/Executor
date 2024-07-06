@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "./NewChatWindows.css";
 
 const NewChatWindows: React.FC = () => {
@@ -136,14 +136,14 @@ interface CardProps {
   onClick: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, onClick }) => (
-  <div
-    className="p-4 bg-gray-50 rounded-lg shadow cursor-pointer hover:bg-gray-100"
-    onClick={onClick}
-  >
-    <h2 className="text-xl">{title}</h2>
-  </div>
-);
+// const Card: React.FC<CardProps> = ({ title, onClick }) => (
+//   <div
+//     className="p-4 bg-gray-50 rounded-lg shadow cursor-pointer hover:bg-gray-100"
+//     onClick={onClick}
+//   >
+//     <h2 className="text-xl">{title}</h2>
+//   </div>
+// );
 
 interface ChatWindowProps {
   chatType: string;

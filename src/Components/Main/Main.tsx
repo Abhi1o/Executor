@@ -6,8 +6,8 @@ import Blockchain__1 from "../../Assets/Image/Blockchain__1_-removebg-preview.pn
 import Ai from "../../Assets/Image/Ai-removebg-preview.png";
 import Ai_Processor from "../../Assets/Image/Ai_Processor-removebg-preview.png";
 import Neural_Network from "../../Assets/Image/Neural_Network-removebg-preview.png";
-import Blockchain__4 from "../../Assets/Image/Blockchain__4_-removebg-preview.png";
-import Ethereum from "../../Assets/Image/Blockchain__2_-removebg-preview.png";
+// import Blockchain__4 from "../../Assets/Image/Blockchain__4_-removebg-preview.png";
+// import Ethereum from "../../Assets/Image/Blockchain__2_-removebg-preview.png";
 import profile from "../../Assets/Image/Young_Person-removebg-preview.png";
 import { SiCardano } from "react-icons/si";
 import { TbDots } from "react-icons/tb";
@@ -15,7 +15,7 @@ import { LuSendToBack } from "react-icons/lu";
 import { TbCreditCardRefund } from "react-icons/tb";
 import { PiInvoiceLight } from "react-icons/pi";
 import { TbTableOptions } from "react-icons/tb";
-import { BorderBeam } from "../../magicui/border-beam";
+// import { BorderBeam } from "../../magicui/border-beam";
 
 const Main: React.FC = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -102,9 +102,9 @@ const Main: React.FC = () => {
     },
   ];
 
-  const toggleProfileMenu = () => {
-    setProfileMenuOpen(!profileMenuOpen);
-  };
+  // const toggleProfileMenu = () => {
+  //   setProfileMenuOpen(!profileMenuOpen);
+  // };
   return (
     <>
       <div className="px-6 pt-6">

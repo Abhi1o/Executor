@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Wallet, HDNodeWallet, Mnemonic } from "ethers";
 import CryptoJS from "crypto-js";
 import "./OnboardingPage2.scss";
-import Encryption from "../../Assets/Image/Encryption.gif";
-import { Link, useNavigate } from "react-router-dom";
+// import Encryption from "../../Assets/Image/Encryption.gif";
+import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { LuCopy, LuCopyCheck } from "react-icons/lu";
 
@@ -73,27 +73,27 @@ const CreateWallet = ({ onNext }) => {
     }
   };
 
-  const handleLogin = () => {
-    const storedPrivateKey = localStorage.getItem("encryptedPrivateKey");
-    if (storedPrivateKey) {
-      try {
-        const decrypted = CryptoJS.AES.decrypt(
-          storedPrivateKey,
-          password
-        ).toString(CryptoJS.enc.Utf8);
-        if (decrypted) {
-          alert("Login successful!");
-          navigate("/home");
-        } else {
-          alert("Incorrect password.");
-        }
-      } catch (error) {
-        alert("Incorrect password.");
-      }
-    } else {
-      alert("No wallet found. Please complete the onboarding process.");
-    }
-  };
+  // const handleLogin = () => {
+  //   const storedPrivateKey = localStorage.getItem("encryptedPrivateKey");
+  //   if (storedPrivateKey) {
+  //     try {
+  //       const decrypted = CryptoJS.AES.decrypt(
+  //         storedPrivateKey,
+  //         password
+  //       ).toString(CryptoJS.enc.Utf8);
+  //       if (decrypted) {
+  //         alert("Login successful!");
+  //         navigate("/home");
+  //       } else {
+  //         alert("Incorrect password.");
+  //       }
+  //     } catch (error) {
+  //       alert("Incorrect password.");
+  //     }
+  //   } else {
+  //     alert("No wallet found. Please complete the onboarding process.");
+  //   }
+  // };
 
   const [step, setStep] = useState(0);
 

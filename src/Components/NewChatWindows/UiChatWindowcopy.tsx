@@ -107,10 +107,10 @@ const ChatPage: React.FC = () => {
   const [copy, setCopy] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState("Connecting to network...");
-  const messagesEndRef = useRef(null);
+  // const [loadingText, setLoadingText] = useState("Connecting to network...");
+  // const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState<any[]>([]);
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);

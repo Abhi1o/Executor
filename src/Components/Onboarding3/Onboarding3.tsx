@@ -1,9 +1,9 @@
 import React from "react";
 import "./Onboarding3.scss";
 // import RetroGrid from "../../magicui/retro-grid";
-import cube from "../../Assets/Image/3D_Cube_Rotation-removebg-preview (1).png";
+// import cube from "../../Assets/Image/3D_Cube_Rotation-removebg-preview (1).png";
 import data from "../../Assets/Image/Data_Integration-removebg-preview (1).png";
-import chatcpt from "../../Assets/Image/Chat_Gpt_Database-removebg-preview.png";
+// import chatcpt from "../../Assets/Image/Chat_Gpt_Database-removebg-preview.png";
 import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import ShimmerButton from "../../magicui/shimmer-button";

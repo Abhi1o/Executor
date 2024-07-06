@@ -1,11 +1,11 @@
 import React from "react";
 import "./Onboarding2.scss";
 import { cn } from "../../lib/utils";
-import aichat from "../../Assets/Image/Ai_Chat-removebg-preview (1).png";
+// import aichat from "../../Assets/Image/Ai_Chat-removebg-preview (1).png";
 import safebox from "../../Assets/Image/Safe_Box-removebg-preview (1).png";
-import cube from "../../Assets/Image/3D_Cube_Rotation-removebg-preview (1).png";
-import data from "../../Assets/Image/Data_Integration-removebg-preview (1).png";
-import chatcpt from "../../Assets/Image/Chat_Gpt_Database-removebg-preview.png";
+// import cube from "../../Assets/Image/3D_Cube_Rotation-removebg-preview (1).png";
+// import data from "../../Assets/Image/Data_Integration-removebg-preview (1).png";
+// import chatcpt from "../../Assets/Image/Chat_Gpt_Database-removebg-preview.png";
 import { Link } from "react-router-dom";
 import ShimmerButton from "../../magicui/shimmer-button";
 import AnimatedGridPattern from "../../magicui/animated-grid-pattern";

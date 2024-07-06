@@ -1,7 +1,7 @@
 import React from "react";
 import "./Onboarding1.scss";
 import aichat from "../../Assets/Image/Ai_Chat-removebg-preview (1).png";
-import RetroGrid from "../../magicui/retro-grid";
+// import RetroGrid from "../../magicui/retro-grid";
 import { cn } from "../../lib/utils";
 import { Link } from "react-router-dom";
 import ShimmerButton from "../../magicui/shimmer-button";

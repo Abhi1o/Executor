@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from "../../Assets/Image/logo-svg.png";
-import avatar from "../../Assets/Image/avatar.webp";
+// import avatar from "../../Assets/Image/avatar.webp";
 import profile from "../../Assets/Image/Young_Person-removebg-preview.png";
 import "./NewSidebar.css"
 interface NewSidebarProps {

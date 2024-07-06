@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigationType, useLocation } from 'react-router-dom';
 import OnboardingPage2 from "./pages/OnboardingPage3/OnboardingPage2";
-import { Toaster, toast } from 'sonner'
+
 import './App.css';
 
 import ProfilePage from './pages/Profilepage/ProfilePage';
@@ -13,10 +13,10 @@ import Onboarding3 from './Components/Onboarding3/Onboarding3';
 import UserInfoPage from './Components/UserInfo/UserInfoPage';
 import WalletLogin from './Components/walletLogin/WalletLogin';
 import Home from './Components/Main/Main';
-import ChatWindow from './Components/NewChatWindows/ChatWindow';
+// import ChatWindow from './Components/NewChatWindows/ChatWindow';
 import MarketPlace from './Components/MarketPlace/MarketPlace';
-import NewChatWindows from './Components/NewChatWindows/NewChatWindows';
-import { BorderBeam } from './magicui/border-beam';
+// import NewChatWindows from './Components/NewChatWindows/NewChatWindows';
+// import { BorderBeam } from './magicui/border-beam';
 import ChatPage from './Components/NewChatWindows/UiChatWindowcopy';
 
 const App: React.FC = () => {

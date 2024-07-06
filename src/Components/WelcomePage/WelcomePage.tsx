@@ -11,7 +11,7 @@ type WelcomePageProps = {
 
 };
 
-const WelcomePage = ({onNext }:WelcomePageProps) => {
+const WelcomePage: React.FC<WelcomePageProps> = ({ onNext }) => {
   const words = [
     "Workflow",
     "Process",

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "./UserInfoPage.scss";
 import { cn } from "../../lib/utils";
-import { Link, useNavigate } from "react-router-dom";
-import blue from "../../Assets/Image/people-building-metaverse-removebg-preview.png";
-import user from "../../Assets/Image/user.png";
+import { useNavigate } from "react-router-dom";
+// import blue from "../../Assets/Image/people-building-metaverse-removebg-preview.png";
+// import user from "../../Assets/Image/user.png";
 import { Toaster, toast } from 'sonner'
 import { BorderBeam } from "../../magicui/border-beam";
 import AnimatedGridPattern from "../../magicui/animated-grid-pattern";
-import ShimmerButton from "../../magicui/shimmer-button";
+// import ShimmerButton from "../../magicui/shimmer-button";
 interface UserInfoPageProps {
   onNext: () => void;
 }
@@ -17,8 +17,8 @@ const UserInfoPage: React.FC<UserInfoPageProps> = ({ onNext }) => {
 
   const [password, setPassword] = useState("");
   const [walletname, setWalletname] = useState("");
-  const [selectedQuestion, setSelectedQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
+  // const [selectedQuestion, setSelectedQuestion] = useState("");
+  // const [answer, setAnswer] = useState("");
 
   const handleContinue = () => {
     // Validate that both question and answer are filled out
