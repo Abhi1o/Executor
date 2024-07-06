@@ -42,27 +42,22 @@ console.log("generatedText",generatedText)
       console.log("Extracted function code:", functionCode);
 
 
-      const modifiedFunctionCode = functionCode
-  .replace(
-    "async function(DirectSecp256k1HdWallet, SigningStargateClient,",
-    "async function(createWallet, SigningStargateClient,"
-  )
-  .replace(
-    "const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, options);",
-    "const wallet = await createWallet(mnemonic, options);"
-  );
+  //     const modifiedFunctionCode = functionCode
+  // .replace(
+  //   "async function(DirectSecp256k1HdWallet, SigningStargateClient,",
+  //   "async function(createWallet, SigningStargateClient,"
+  // )
+  // .replace(
+  //   "const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, options);",
+  //   "const wallet = await createWallet(mnemonic, options);"
+  // );
   
-      console.log("Modified function code:", modifiedFunctionCode);
+  //     console.log("Modified function code:", modifiedFunctionCode);
   
-      const dynamicFunction = eval(`(${modifiedFunctionCode})`);
+  //     const dynamicFunction = eval(`(${modifiedFunctionCode})`);
 
-      // const dynamicFunction = eval(`(${functionCode})`);
 
-      
-
-      // const proxyUrl = "http://localhost:8080/";
-      // console.log("after dynamic function");
-
+        const dynamicFunction = eval(`(${functionCode})`);
       const proxyFunction = async (
         DirectSecp256k1HdWallet: any,
         SigningStargateClient: any,
@@ -70,37 +65,8 @@ console.log("generatedText",generatedText)
         chainConfig: any
       ): Promise<any> => {
         console.log("inside proxy function");
-        
-       
-        // console.log(
-        //   "DirectSecp256k1HdWallet methods:",
-        //   Object.getOwnPropertyNames(DirectSecp256k1HdWallet)
-        // );
-        // const originalFetch = window.fetch;
-        // console.log("originalFetch", originalFetch);
-        // window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
-        //   console.log("inside fetch", originalFetch);
-        //   let url = input instanceof Request ? input.url : input.toString();
-        //   if (
-        //     typeof url === "string" &&
-        //     url.startsWith("https://cosmos-rpc.quickapi.com")
-        //   ) {
-        //     url = proxyUrl + url;
-        //   } else if (!url) {
-        //     console.error("Error: URL is undefineinside proxy functiond in fetch call");
-        //     return Promise.reject(new Error("URL is undefined"));
-        //   }
-        //   return originalFetch(url, init);
-        // };
         try {
-          console.log("going inside try proxy function");
-          // const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
-          //   mnemonic,
-          //   Option
-          // );
-
-          
-
+        
           // Adding a wrapper around dynamicFunction to catch errors within it
           const result = await dynamicFunction(
             DirectSecp256k1HdWallet,
@@ -112,8 +78,6 @@ console.log("generatedText",generatedText)
         } catch (error) {
           console.error("Error in proxyFunction:", error);
           throw error;
-        } finally {
-          window.fetch = originalFetch;
         }
       };
 
@@ -177,19 +141,19 @@ const ChatPage: React.FC = () => {
     }
   }, []);
 
-  // const handleHashCopy = (transactionHash:string) => {
-  //   navigator.clipboard.writeText(transactionHash).then(
-  //     () => {
-  //       setCopy(true);
-  //       setTimeout(() => {
-  //         setCopy(false);
-  //       }, 3000);
-  //     },
-  //     (err) => {
-  //       console.error("Could not copy text: ", err);
-  //     }
-  //   );
-  // };
+  const handleHashCopy = (transactionHash:string) => {
+    navigator.clipboard.writeText(transactionHash).then(
+      () => {
+        setCopy(true);
+        setTimeout(() => {
+          setCopy(false);
+        }, 3000);
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -233,7 +197,7 @@ const ChatPage: React.FC = () => {
 
       try {
         if (isTransaction) {
-          const chainConfig: any = {}; // Add appropriate chainConfig values
+           // Add appropriate chainConfig values
           const transactionFunction = await testing(
             inputValue,
             mnemonic,
@@ -391,12 +355,14 @@ const ChatPage: React.FC = () => {
                         <div className="pb-0.5 caption1 text-n-4/50  font-medium">
                           {message.time}
                         </div>
-                        <button
-                          className="h-6 ml-3 px-2 bg-n-3 font-medium rounded-md caption1 txt-n-6 transition-colors hover:text-sky-500 dark:bg-n-7 bg-gray-200"
-                          // onClick={() => handleHashCopy(copy)}
-                        >
-                          {copy ? "Copied ✅" : "Copy Hash"}
-                        </button>
+                        {message.transactionHash && (
+                          <button
+                            className="h-6 ml-3 px-2 bg-n-3 font-medium rounded-md caption1 txt-n-6 transition-colors hover:text-sky-500 dark:bg-n-7 bg-gray-200"
+                            onClick={() => handleHashCopy(message.transactionHash)}
+                          >
+                            {copy ? "Copied ✅" : "Copy Hash"}
+                          </button>
+                        )}
                         <button
                           className="h-6 ml-3 px-2 bg-n-3 rounded-md caption1 txt-n-6 font-medium transition-colors hover:text-primary-1 hover:text-sky-500 dark:bg-n-7 bg-gray-200"
                           onClick={() => handleSend()}

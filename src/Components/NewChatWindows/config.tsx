@@ -7,7 +7,7 @@ interface ChainConfig {
   }
   
   const chainConfig: ChainConfig = {
-    rpcEndpoint: 'https://cosmos-rpc.quickapi.com:443',
+    rpcEndpoint: 'http://localhost:8080',
     prefix: 'cosmos',
     denom: 'uatom', // smallest unit of ATOM
     feeAmount: '10000', // in uatom
