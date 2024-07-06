@@ -17,7 +17,7 @@ import ChatWindow from './Components/NewChatWindows/ChatWindow';
 import MarketPlace from './Components/MarketPlace/MarketPlace';
 import NewChatWindows from './Components/NewChatWindows/NewChatWindows';
 import { BorderBeam } from './magicui/border-beam';
-import ChatPage from './Components/NewChatWindows/UiChatWindow';
+import ChatPage from './Components/NewChatWindows/UiChatWindowcopy';
 
 const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(false);
@@ -101,7 +101,7 @@ const MainApp: React.FC = () => {
       <div className={`main-content content ${isSidebarOpen ? 'expanded' : 'collapsed'} ${isDarkMode ? "dark" : "light"}`}>
         <Routes>
           <Route path="/home" element={<Home />} />
-          {/* <Route path="/chat" element={<ChatWindow />} /> */}
+          {/* <Route path="/chat" element={< />} /> */}
           <Route path="/chat" element={<ChatPage/>} />
           <Route path="/marketplace" element={<MarketPlace />} />
           <Route path="/profile" element={<ProfilePage />} />

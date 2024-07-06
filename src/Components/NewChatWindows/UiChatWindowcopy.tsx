@@ -1,4 +1,9 @@
-import React, { useState,useRef,useEffect } from "react";
+// src/components/ChatPage.tsx
+import React, { useState, useRef, useEffect } from "react";
+import { SigningStargateClient } from "@cosmjs/stargate";
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import chainConfig from "./config";
+import "./NewChatWindows";
 import {
   FiStar,
   FiShare2,
@@ -6,24 +11,186 @@ import {
   FiSend,
   FiTrash2,
 } from "react-icons/fi";
-import "./NewChatWindows";
 import profile from "../../Assets/Image/Young_Person-removebg-preview.png";
+import { format } from "date-fns"; // Add this import
+interface ChainConfig {
+  rpcEndpoint: string;
+  prefix: string;
+  denom: string;
+  feeAmount: string;
+  gas: string;
+}
+const testing = async (input: string, mnemonic: string, chainConfig: ChainConfig) => {
+  async function extractFunctionFromResponse(response: any) {
+    const generatedText = response[0].generated_text;
+console.log("generatedText",generatedText)
+    const asyncKeywordIndex = generatedText.indexOf("async");
+    console.log("asyncKeywordIndex",asyncKeywordIndex)
+    const assistantKeywordIndex = generatedText.indexOf("<assistant>:");
+    console.log("assistantKeywordIndex",assistantKeywordIndex)
+    if (asyncKeywordIndex !== -1 && asyncKeywordIndex > assistantKeywordIndex) {
+      const functionStart = generatedText.indexOf(
+        "async",
+        assistantKeywordIndex
+      );
+      const functionEnd =
+        generatedText.indexOf("return result.transactionHash;") +
+        "return result.transactionHash;".length;
+
+      const functionCode =
+        generatedText.substring(functionStart, functionEnd) + "\n}";
+      console.log("Extracted function code:", functionCode);
+
+
+      const modifiedFunctionCode = functionCode
+  .replace(
+    "async function(DirectSecp256k1HdWallet, SigningStargateClient,",
+    "async function(createWallet, SigningStargateClient,"
+  )
+  .replace(
+    "const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, options);",
+    "const wallet = await createWallet(mnemonic, options);"
+  );
+  
+      console.log("Modified function code:", modifiedFunctionCode);
+  
+      const dynamicFunction = eval(`(${modifiedFunctionCode})`);
+
+      // const dynamicFunction = eval(`(${functionCode})`);
+
+      
+
+      // const proxyUrl = "http://localhost:8080/";
+      // console.log("after dynamic function");
+
+      const proxyFunction = async (
+        DirectSecp256k1HdWallet: any,
+        SigningStargateClient: any,
+        mnemonic: string,
+        chainConfig: any
+      ): Promise<any> => {
+        console.log("inside proxy function");
+        
+       
+        // console.log(
+        //   "DirectSecp256k1HdWallet methods:",
+        //   Object.getOwnPropertyNames(DirectSecp256k1HdWallet)
+        // );
+        // const originalFetch = window.fetch;
+        // console.log("originalFetch", originalFetch);
+        // window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        //   console.log("inside fetch", originalFetch);
+        //   let url = input instanceof Request ? input.url : input.toString();
+        //   if (
+        //     typeof url === "string" &&
+        //     url.startsWith("https://cosmos-rpc.quickapi.com")
+        //   ) {
+        //     url = proxyUrl + url;
+        //   } else if (!url) {
+        //     console.error("Error: URL is undefineinside proxy functiond in fetch call");
+        //     return Promise.reject(new Error("URL is undefined"));
+        //   }
+        //   return originalFetch(url, init);
+        // };
+        try {
+          console.log("going inside try proxy function");
+          // const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
+          //   mnemonic,
+          //   Option
+          // );
+
+          
+
+          // Adding a wrapper around dynamicFunction to catch errors within it
+          const result = await dynamicFunction(
+            DirectSecp256k1HdWallet,
+            SigningStargateClient,
+            mnemonic,
+            chainConfig
+          );
+          return result;
+        } catch (error) {
+          console.error("Error in proxyFunction:", error);
+          throw error;
+        } finally {
+          window.fetch = originalFetch;
+        }
+      };
+
+      const result = await proxyFunction(
+        DirectSecp256k1HdWallet,
+        SigningStargateClient,
+        mnemonic,
+        chainConfig
+      );
+
+      return result;
+    }
+
+    return generatedText;
+  }
+
+  const url = "https://88db-18-213-200-192.ngrok-free.app/predict";
+  const payload = {
+    inputs: `<human>:${input} <assistant>:`,
+  };
+
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+
+    console.log("This is the output in json format", data);
+    const extractedFunction = await extractFunctionFromResponse(data);
+    console.log("extract function", extractedFunction);
+    return extractedFunction;
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+};
 
 const ChatPage: React.FC = () => {
-  const [messages, setMessages] = useState([
-    { type: "bot", text: "Hello! How can I help you today?", time: "Just now" },
-  ]);
+  const [copy, setCopy] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Connecting to network...");
+  const messagesEndRef = useRef(null);
+  const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState("");
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const popupRef = useRef<HTMLDivElement>(null); 
+  const popupRef = useRef<HTMLDivElement>(null);
   const [walletName, setWalletName] = useState("");
+
   useEffect(() => {
     const storedWalletName = localStorage.getItem("walletname");
     if (storedWalletName) {
       setWalletName(storedWalletName);
     }
   }, []);
+
+  // const handleHashCopy = (transactionHash:string) => {
+  //   navigator.clipboard.writeText(transactionHash).then(
+  //     () => {
+  //       setCopy(true);
+  //       setTimeout(() => {
+  //         setCopy(false);
+  //       }, 3000);
+  //     },
+  //     (err) => {
+  //       console.error("Could not copy text: ", err);
+  //     }
+  //   );
+  // };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -39,19 +206,78 @@ const ChatPage: React.FC = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [popupRef]);
-  const handleSend = () => {
-    if (input.trim()) {
-      setMessages([
-        ...messages,
-        { type: "user", text: input, time: "Just now" },
-      ]);
-      setInput("");
+
+  const handleSend = async () => {
+    const isTransaction = true;
+    const mnemonic =
+      "sign public soldier jewel flavor bring you hand inject soft trust lens"; // Replace with actual mnemonic
+
+    if (inputValue.trim()) {
+      const userMessage = {
+        type: "user",
+        text: inputValue,
+        time: format(new Date(), "hh:mm"),
+      };
+      setMessages([...messages, userMessage]);
+      setInputValue("");
+
+      const loadingMessage = {
+        type: "loading",
+        text: "Loading...",
+        sender: "bot",
+        timestamp: new Date(),
+      };
+      setMessages((prevMessages) => [...prevMessages, loadingMessage]);
+
+      setLoading(true);
+
+      try {
+        if (isTransaction) {
+          const chainConfig: any = {}; // Add appropriate chainConfig values
+          const transactionFunction = await testing(
+            inputValue,
+            mnemonic,
+            chainConfig
+          );
+          console.log(transactionFunction);
+          const transactionHash = await transactionFunction;
+          const botReply = {
+            type: "transaction",
+            blockchainImage: "path/to/image", // Replace with the actual image path
+            blockchainName: "cosmoshub",
+            amount: "0.01", // Replace with the actual amount
+            recipient: "recipient_address", // Replace with the actual recipient
+            transactionHash: transactionHash,
+          };
+          setMessages((prevMessages) => [
+            ...prevMessages.slice(0, -1),
+            botReply,
+          ]);
+        } else {
+          const botReply = {
+            text: `Echo: ${inputValue}`,
+            sender: "bot",
+            timestamp: new Date(),
+          };
+          setMessages((prevMessages) => [
+            ...prevMessages.slice(0, -1),
+            botReply,
+          ]);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        const botReply = {
+          text: "Error occurred during transaction.",
+          sender: "bot",
+          timestamp: new Date(),
+        };
+        setMessages((prevMessages) => [...prevMessages.slice(0, -1), botReply]);
+      }
+
+      setLoading(false);
     }
   };
 
-
-
-  
   const notifications = [
     {
       id: 5,
@@ -101,7 +327,7 @@ const ChatPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex max-h-[740px]">
+    <div className="flex max-h-full overflow-none">
       {/* Left Section - Chat Window */}
       <div className="min-w-2.3/3 flex-grow flex flex-col border-r border-gray-200 shadow-2xl">
         {/* Nav Section */}
@@ -115,7 +341,7 @@ const ChatPage: React.FC = () => {
         </div>
 
         {/* Main Chat Section */}
-        <div className=" px-9 relative z-2 grow p-10 space-y-10 overflow-y-auto scroll-smooth scrollbar-none h-[600px]">
+        <div className=" px-9 relative z-2 grow p-10 space-y-10 overflow-y-auto scroll-smooth scrollbar-none h-[100vh]">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -124,7 +350,7 @@ const ChatPage: React.FC = () => {
               }`}
             >
               <div
-                className={`inline-block rounded-[20px] w-[50rem]  ${
+                className={`inline-block rounded-[20px] w-[50rem] ${
                   message.type === "user"
                     ? "space-y-6 pt-6 px-6 pb-20 border-2  md:p-5 md:px-6 md:pb-14 border-gray-200 font-medium"
                     : "pt-6 px-6 pb-6 space-y-4 md:p-5 md:pb-14 font-medium bg-gray-200 "
@@ -156,7 +382,7 @@ const ChatPage: React.FC = () => {
                         <img
                           src="https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg&w=1920&q=75"
                           alt="Bot"
-                          className="inline-block align-top transition-opacity opacity-100 object-cover"
+                          className="inline-block  align-top transition-opacity opacity-100 object-cover"
                           loading="lazy"
                         />
                       </div>
@@ -165,10 +391,16 @@ const ChatPage: React.FC = () => {
                         <div className="pb-0.5 caption1 text-n-4/50  font-medium">
                           {message.time}
                         </div>
-                        <button className="h-6 ml-3 px-2 bg-n-3 font-medium rounded-md caption1 txt-n-6 transition-colors hover:text-sky-500 dark:bg-n-7 bg-gray-200 ">
-                          Copy
+                        <button
+                          className="h-6 ml-3 px-2 bg-n-3 font-medium rounded-md caption1 txt-n-6 transition-colors hover:text-sky-500 dark:bg-n-7 bg-gray-200"
+                          // onClick={() => handleHashCopy(copy)}
+                        >
+                          {copy ? "Copied ✅" : "Copy Hash"}
                         </button>
-                        <button className="h-6 ml-3 px-2 bg-n-3 rounded-md caption1 txt-n-6 font-medium transition-colors hover:text-primary-1 hover:text-sky-500 dark:bg-n-7 bg-gray-200">
+                        <button
+                          className="h-6 ml-3 px-2 bg-n-3 rounded-md caption1 txt-n-6 font-medium transition-colors hover:text-primary-1 hover:text-sky-500 dark:bg-n-7 bg-gray-200"
+                          onClick={() => handleSend()}
+                        >
                           Regenerate response
                         </button>
                       </div>
@@ -181,34 +413,42 @@ const ChatPage: React.FC = () => {
         </div>
 
         {/* Input Box */}
-        <div className=" relative z-5 px-10 pb-6 before:absolute before:-top-6 before:left-0 before:right-6 before:bottom-1/2 before:bg-gradient-to-b before:to-n-1 before:from-n-1/0 before:pointer-events-none 2xl:px-9 2xl:pb-6 md:px-4 md:pb-4 dark:before:to-n-6 dark:before:from-n-6/0">
-        <div className="relative z-2 border-2 border-n-3 rounded-[20px] overflow-hidden dark:border-n-5">
-                  <div className="relative flex items-center min-h-[3.5rem] px-16 text-0">
-          
-          <button className="group absolute left-3 bottom-2 w-10 h-10 outline-none"><svg className="inline-block w-7 h-7 fill-[#7F8689] transition-colors group-hover:fill-primary-1 dark:fill-n-4" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M12 3a9 9 0 1 1 0 18 9 9 0 1 1 0-18zm0 4.25a.75.75 0 0 0-.75.75h0v3.25H8l-.102.007A.75.75 0 0 0 8 12.75h0 3.25V16l.007.102A.75.75 0 0 0 12.75 16h0v-3.25H16l.102-.007A.75.75 0 0 0 16 11.25h0-3.25V8l-.007-.102A.75.75 0 0 0 12 7.25z"></path>
-            </svg></button>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 p-2 w-full py-3 bg-transparent body2 text-n-7 outline-none resize-none  h-12"
-            placeholder="Ask Executor anything "
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSend();
-              }
-            }}
-          />
-          <button onClick={handleSend} className=" group absolute right-1 bottom-2 items-center text-center w-10 h-10">
-            <FiSend fontSize="20px" className="hover:text-blue-500 text-gray-600"/>
-          </button>
-
-
-        </div>
-        </div>
-
-          
+        <div className="relative z-5 px-10 pb-6 before:absolute before:-top-6 before:left-0 before:right-6 before:bottom-1/2 before:bg-gradient-to-b before:to-n-1 before:from-n-1/0 before:pointer-events-none 2xl:px-9 2xl:pb-6 md:px-4 md:pb-4 dark:before:to-n-6 dark:before:from-n-6/0">
+          <div className="relative z-2 border-2 border-n-3 rounded-[20px] overflow-hidden dark:border-n-5">
+            <div className="relative flex items-center min-h-[3.5rem] px-16 text-0">
+              <button className="group absolute left-3 bottom-2 w-10 h-10 outline-none">
+                <svg
+                  className="inline-block w-7 h-7 fill-[#7F8689] transition-colors group-hover:fill-primary-1 dark:fill-n-4"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 3a9 9 0 1 1 0 18 9 9 0 1 1 0-18zm0 4.25a.75.75 0 0 0-.75.75h0v3.25H8l-.102.007A.75.75 0 0 0 8 12.75h0 3.25V16l.007.102A.75.75 0 0 0 12.75 16h0v-3.25H16l.102-.007A.75.75 0 0 0 16 11.25h0-3.25V8l-.007-.102A.75.75 0 0 0 12 7.25z"></path>
+                </svg>
+              </button>
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="flex-1 p-2 w-full py-3 bg-transparent body2 text-n-7 outline-none resize-none h-12"
+                placeholder="Ask Executor anything "
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleSend();
+                  }
+                }}
+              />
+              <button
+                onClick={handleSend}
+                className="group absolute right-1 bottom-2 items-center text-center w-10 h-10"
+              >
+                <FiSend
+                  fontSize="20px"
+                  className="hover:text-blue-500 text-gray-600"
+                />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -217,10 +457,9 @@ const ChatPage: React.FC = () => {
         <div className="flex items-center justify-between py-[16px] px-7 border-b border-gray-200">
           <div className="flex items-center space-x-2">
             <FiShare2 className="cursor-pointer" />
-           
-          </div> 
+          </div>
           <div className="flex items-center space-x-2">
-             <div className="relative">
+            <div className="relative">
               <button
                 onClick={() => setShowPopup(!showPopup)}
                 className="p-1 rounded-full hover:bg-gray-200 focus:outline-none"
@@ -264,7 +503,7 @@ const ChatPage: React.FC = () => {
                     >
                       <div className="relative">
                         <img
-                          src={notification.imgSrc}
+                          src={notification.imgSrc || "default_image.jpg"}
                           alt={notification.name}
                           className="w-10 h-10 rounded-full"
                         />
@@ -288,7 +527,7 @@ const ChatPage: React.FC = () => {
                 </div>
               )}
             </div>
-{/* profile setting  */}
+            {/* profile setting  */}
             <div className="relative">
               <button onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
                 <img
@@ -319,23 +558,25 @@ const ChatPage: React.FC = () => {
               )}
             </div>
           </div>
-            {/* notification  */}
-           
-          
+          {/* notification  */}
         </div>
 
         <div className="flex-1 overflow-y-auto p-7 ">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
-              <h2 className="text-base text-gray-400 font-semibold">Chat History</h2>
-            <span className="text-xs rounded-lg px-2 py-[2px] font-medium text-gray-600 bg-gray-300 ">26/100</span></div>
-            
+              <h2 className="text-base text-gray-400 font-semibold">
+                Chat History
+              </h2>
+              <span className="text-xs rounded-lg px-2 py-[2px] font-medium text-gray-600 bg-gray-300 ">
+                26/100
+              </span>
+            </div>
+
             <FiTrash2 className="cursor-pointer" />
           </div>
           {/* Chat History List */}
           <div className="w-full mt-8 mb-5">
-            {/* Example Chat History Item */}
-            <div className="flex items-center justify-between mb-4 rounded-2xl border-2  px-4 py-3 bg-white">
+            <div className="flex items-center justify-between mb-4 rounded-2xl border-2 px-4 py-3 bg-white">
               <div className="pr-5">
                 <h3 className="text-base font-semibold">Executor AI UI Kit</h3>
                 <p className="text-xs font-medium text-gray-400">
@@ -349,7 +590,7 @@ const ChatPage: React.FC = () => {
         </div>
 
         <div className="p-7">
-          <button className="w-full h-14  bg-blue-500 px-7 text-white py-2 rounded-xl">
+          <button className="w-full h-14 bg-blue-500 px-7 text-white py-2 rounded-xl">
             New Chat
           </button>
         </div>
