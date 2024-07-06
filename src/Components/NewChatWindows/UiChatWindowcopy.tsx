@@ -23,11 +23,11 @@ interface ChainConfig {
 const testing = async (input: string, mnemonic: string, chainConfig: ChainConfig) => {
   async function extractFunctionFromResponse(response: any) {
     const generatedText = response[0].generated_text;
-console.log("generatedText",generatedText)
+    console.log("generatedText", generatedText)
     const asyncKeywordIndex = generatedText.indexOf("async");
-    console.log("asyncKeywordIndex",asyncKeywordIndex)
+    console.log("asyncKeywordIndex", asyncKeywordIndex)
     const assistantKeywordIndex = generatedText.indexOf("<assistant>:");
-    console.log("assistantKeywordIndex",assistantKeywordIndex)
+    console.log("assistantKeywordIndex", assistantKeywordIndex)
     if (asyncKeywordIndex !== -1 && asyncKeywordIndex > assistantKeywordIndex) {
       const functionStart = generatedText.indexOf(
         "async",
@@ -41,23 +41,7 @@ console.log("generatedText",generatedText)
         generatedText.substring(functionStart, functionEnd) + "\n}";
       console.log("Extracted function code:", functionCode);
 
-
-  //     const modifiedFunctionCode = functionCode
-  // .replace(
-  //   "async function(DirectSecp256k1HdWallet, SigningStargateClient,",
-  //   "async function(createWallet, SigningStargateClient,"
-  // )
-  // .replace(
-  //   "const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, options);",
-  //   "const wallet = await createWallet(mnemonic, options);"
-  // );
-  
-  //     console.log("Modified function code:", modifiedFunctionCode);
-  
-  //     const dynamicFunction = eval(`(${modifiedFunctionCode})`);
-
-
-        const dynamicFunction = eval(`(${functionCode})`);
+      const dynamicFunction = eval(`(${functionCode})`);
       const proxyFunction = async (
         DirectSecp256k1HdWallet: any,
         SigningStargateClient: any,
@@ -66,8 +50,6 @@ console.log("generatedText",generatedText)
       ): Promise<any> => {
         console.log("inside proxy function");
         try {
-        
-          // Adding a wrapper around dynamicFunction to catch errors within it
           const result = await dynamicFunction(
             DirectSecp256k1HdWallet,
             SigningStargateClient,
@@ -141,20 +123,6 @@ const ChatPage: React.FC = () => {
     }
   }, []);
 
-  const handleHashCopy = (transactionHash:string) => {
-    navigator.clipboard.writeText(transactionHash).then(
-      () => {
-        setCopy(true);
-        setTimeout(() => {
-          setCopy(false);
-        }, 3000);
-      },
-      (err) => {
-        console.error("Could not copy text: ", err);
-      }
-    );
-  };
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -207,11 +175,9 @@ const ChatPage: React.FC = () => {
           const transactionHash = await transactionFunction;
           const botReply = {
             type: "transaction",
-            blockchainImage: "path/to/image", // Replace with the actual image path
-            blockchainName: "cosmoshub",
-            amount: "0.01", // Replace with the actual amount
-            recipient: "recipient_address", // Replace with the actual recipient
-            transactionHash: transactionHash,
+            text: `Transaction successful: ${transactionHash}`,
+            transactionHash,
+            time: format(new Date(), "hh:mm"),
           };
           setMessages((prevMessages) => [
             ...prevMessages.slice(0, -1),
@@ -241,6 +207,22 @@ const ChatPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleHashCopy = (transactionHash: string) => {
+    navigator.clipboard.writeText(transactionHash).then(
+      () => {
+        setCopy(true);
+        setTimeout(() => {
+          setCopy(false);
+        }, 3000);
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
+  };
+
+  
 
   const notifications = [
     {
@@ -346,7 +328,7 @@ const ChatPage: React.FC = () => {
                         <img
                           src="https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg&w=1920&q=75"
                           alt="Bot"
-                          className="inline-block  align-top transition-opacity opacity-100 object-cover"
+                          className="inline-block align-top transition-opacity opacity-100 object-cover"
                           loading="lazy"
                         />
                       </div>
