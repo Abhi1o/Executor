@@ -2,6 +2,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import process from "../../Assets/Image/Infinity Loop (1).gif";
+import complete from "../../Assets/Image/output-onlinegiftools (1).gif";
 import chainConfig from "./config";
 import "./NewChatWindows";
 import {
@@ -20,14 +22,18 @@ interface ChainConfig {
   feeAmount: string;
   gas: string;
 }
-const testing = async (input: string, mnemonic: string, chainConfig: ChainConfig) => {
+const testing = async (
+  input: string,
+  mnemonic: string,
+  chainConfig: ChainConfig
+) => {
   async function extractFunctionFromResponse(response: any) {
     const generatedText = response[0].generated_text;
-    console.log("generatedText", generatedText)
+    console.log("generatedText", generatedText);
     const asyncKeywordIndex = generatedText.indexOf("async");
-    console.log("asyncKeywordIndex", asyncKeywordIndex)
+    console.log("asyncKeywordIndex", asyncKeywordIndex);
     const assistantKeywordIndex = generatedText.indexOf("<assistant>:");
-    console.log("assistantKeywordIndex", assistantKeywordIndex)
+    console.log("assistantKeywordIndex", assistantKeywordIndex);
     if (asyncKeywordIndex !== -1 && asyncKeywordIndex > assistantKeywordIndex) {
       const functionStart = generatedText.indexOf(
         "async",
@@ -41,7 +47,13 @@ const testing = async (input: string, mnemonic: string, chainConfig: ChainConfig
         generatedText.substring(functionStart, functionEnd) + "\n}";
       console.log("Extracted function code:", functionCode);
 
-      const dynamicFunction = new Function('DirectSecp256k1HdWallet', 'SigningStargateClient', 'mnemonic', 'chainConfig', functionCode);
+      const dynamicFunction = new Function(
+        "DirectSecp256k1HdWallet",
+        "SigningStargateClient",
+        "mnemonic",
+        "chainConfig",
+        functionCode
+      );
       const proxyFunction = async (
         DirectSecp256k1HdWallet: any,
         SigningStargateClient: any,
@@ -116,6 +128,10 @@ const ChatPage: React.FC = () => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [walletName, setWalletName] = useState("");
 
+  const loadingGifUrl = process; // Replace with the actual path
+  const completionGifUrl = complete; // Replace with the actual path
+  const staticBotImageUrl = "https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg"; // Replace with the actual path
+
   useEffect(() => {
     const storedWalletName = localStorage.getItem("walletname");
     if (storedWalletName) {
@@ -142,7 +158,7 @@ const ChatPage: React.FC = () => {
   const handleSend = async () => {
     const isTransaction = true;
     const mnemonic =
-      "sign public soldier jewel flavor bring you hand inject soft trust lens"; // Replace with actual mnemonic
+      " sign public soldier jewel flavor bring you hand inject soft trust lens"; // Replace with actual mnemonic
 
     if (inputValue.trim()) {
       const userMessage = {
@@ -165,7 +181,7 @@ const ChatPage: React.FC = () => {
 
       try {
         if (isTransaction) {
-           // Add appropriate chainConfig values
+          // Add appropriate chainConfig values
           const transactionFunction = await testing(
             inputValue,
             mnemonic,
@@ -183,6 +199,13 @@ const ChatPage: React.FC = () => {
             ...prevMessages.slice(0, -1),
             botReply,
           ]);
+          setTimeout(() => {
+            setMessages((prevMessages) => {
+              const updatedMessages = [...prevMessages];
+              updatedMessages[updatedMessages.length - 1].type = "static";
+              return updatedMessages;
+            });
+          }, 2000);
         } else {
           const botReply = {
             text: `Echo: ${inputValue}`,
@@ -221,8 +244,6 @@ const ChatPage: React.FC = () => {
       }
     );
   };
-
-  
 
   const notifications = [
     {
@@ -326,7 +347,13 @@ const ChatPage: React.FC = () => {
                     <div className="-mt-7 flex items-end pl-6">
                       <div className="relative shrink-0 w-14 h-14 mr-auto rounded-2xl overflow-hidden shadow-[0_0_0_0.25rem_#FEFEFE] ">
                         <img
-                          src="https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg&w=1920&q=75"
+                          src={
+                            message.type === "loading"
+                              ? loadingGifUrl
+                              : message.type === "transaction"
+                              ? completionGifUrl
+                              : staticBotImageUrl
+                          }
                           alt="Bot"
                           className="inline-block align-top transition-opacity opacity-100 object-cover"
                           loading="lazy"
@@ -340,7 +367,9 @@ const ChatPage: React.FC = () => {
                         {message.transactionHash && (
                           <button
                             className="h-6 ml-3 px-2 bg-n-3 font-medium rounded-md caption1 txt-n-6 transition-colors hover:text-sky-500 dark:bg-n-7 bg-gray-200"
-                            onClick={() => handleHashCopy(message.transactionHash)}
+                            onClick={() =>
+                              handleHashCopy(message.transactionHash)
+                            }
                           >
                             {copy ? "Copied ✅" : "Copy Hash"}
                           </button>
