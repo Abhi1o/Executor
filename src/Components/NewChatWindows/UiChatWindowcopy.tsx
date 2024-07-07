@@ -41,7 +41,7 @@ const testing = async (input: string, mnemonic: string, chainConfig: ChainConfig
         generatedText.substring(functionStart, functionEnd) + "\n}";
       console.log("Extracted function code:", functionCode);
 
-      const dynamicFunction = eval(`(${functionCode})`);
+      const dynamicFunction = new Function('DirectSecp256k1HdWallet', 'SigningStargateClient', 'mnemonic', 'chainConfig', functionCode);
       const proxyFunction = async (
         DirectSecp256k1HdWallet: any,
         SigningStargateClient: any,

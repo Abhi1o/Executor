@@ -16,7 +16,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const storedPrivateKey = localStorage.getItem("encryptedPrivateKey");
-    const storedName = localStorage.getItem("username");
+    // const storedName = localStorage.getItem("username");
 
     if (storedPrivateKey) {
       setShowPasswordPrompt(true);

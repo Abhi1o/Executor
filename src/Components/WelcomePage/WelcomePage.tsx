@@ -58,7 +58,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onNext }) => {
   useEffect(() => {
     const interval = setInterval(changePrompt, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [changePrompt]);
 
   const handlePromptChange = () => {
     changePrompt();

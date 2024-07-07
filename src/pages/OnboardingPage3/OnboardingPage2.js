@@ -18,7 +18,7 @@ const CreateWallet = ({ onNext }) => {
   const [mnemonic, setMnemonic] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [encryptedPrivateKey, setEncryptedPrivateKey] = useState("");
+  const [setEncryptedPrivateKey] = useState("");
   const [isOnboarding, setIsOnboarding] = useState(null);
 
   const handleContinue = () => {

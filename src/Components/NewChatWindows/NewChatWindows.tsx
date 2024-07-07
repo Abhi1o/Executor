@@ -131,10 +131,10 @@ const renderChatBox = () => (
   </div>
 );
 
-interface CardProps {
-  title: string;
-  onClick: () => void;
-}
+// interface CardProps {
+//   title: string;
+//   onClick: () => void;
+// }
 
 // const Card: React.FC<CardProps> = ({ title, onClick }) => (
 //   <div
