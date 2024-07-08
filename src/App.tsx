@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigationType, useLocation } from 'react-router-dom';
 import OnboardingPage2 from "./pages/OnboardingPage3/OnboardingPage2";
-
 import './App.css';
-
 import ProfilePage from './pages/Profilepage/ProfilePage';
 import NewSidebar from './Components/NewSidebar/NewSidebar';
 import WelcomePage from './Components/WelcomePage/WelcomePage';
@@ -13,14 +11,12 @@ import Onboarding3 from './Components/Onboarding3/Onboarding3';
 import UserInfoPage from './Components/UserInfo/UserInfoPage';
 import WalletLogin from './Components/walletLogin/WalletLogin';
 import Home from './Components/Main/Main';
-// import ChatWindow from './Components/NewChatWindows/ChatWindow';
 import MarketPlace from './Components/MarketPlace/MarketPlace';
-// import NewChatWindows from './Components/NewChatWindows/NewChatWindows';
-// import { BorderBeam } from './magicui/border-beam';
 import ChatPage from './Components/NewChatWindows/UiChatWindowcopy';
 
 const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [onboardingStep, setOnboardingStep] = useState<number>(1);
   const action = useNavigationType();
   const location = useLocation();
@@ -32,57 +28,71 @@ const App: React.FC = () => {
     }
   }, [action, pathname]);
 
-  
-
   useEffect(() => {
     const completedOnboarding = localStorage.getItem('onboardingComplete');
+    const loggedIn = localStorage.getItem('isAuthenticated');
     if (completedOnboarding) {
       setIsOnboardingComplete(true);
+    }
+    if (loggedIn === 'true') {
+      setIsAuthenticated(true);
     }
   }, []);
 
   const completeOnboarding = () => {
     setIsOnboardingComplete(true);
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
     localStorage.setItem('onboardingComplete', 'true');
   };
 
   const handleNextStep = () => {
-    setOnboardingStep((prevStep) => {
-      if (prevStep < 3) {
-        const nextStep = prevStep + 1;
-        return nextStep;
-      } else {
-        return prevStep;
-      }
-    });
+    setOnboardingStep((prevStep) => (prevStep < 3 ? prevStep + 1 : prevStep));
+  };
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('isAuthenticated');
   };
 
   return (
     <Routes>
-      
       {!isOnboardingComplete && (
         <>
           <Route path="/" element={<Navigate to={`/onboarding${onboardingStep}`} />} />
-          <Route path="/login" element={<WalletLogin onNext={completeOnboarding} />} />
           <Route path="/onboarding1" element={<WelcomePage onNext={handleNextStep} />} />
           <Route path="/onboarding2" element={<Onboarding1 onNext={handleNextStep} />} />
           <Route path="/onboarding3" element={<Onboarding2 onNext={handleNextStep} />} />
           <Route path="/onboarding4" element={<Onboarding3 onNext={handleNextStep} />} />
           <Route path="/onboarding5" element={<UserInfoPage onNext={completeOnboarding} />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="*" element={<WelcomePage onNext={handleNextStep} />} />
+
+          {/* <Route path="/home" element={<Home onLogout={handleLogout} />} /> */}
         </>
       )}
-      {isOnboardingComplete && (
+      {isOnboardingComplete && !isAuthenticated && (
         <>
+          <Route path="/login" element={<WalletLogin onLogin={handleLogin} />} />
+          <Route path="*" element={<WalletLogin onLogin={handleLogin} />} />
+        </>
+      )}
+      {isOnboardingComplete && isAuthenticated && (
+        <>
+          {/* <Route path="/home" element={<Home onLogout={handleLogout} />} /> */}
           <Route path="/pin" element={<OnboardingPage2 onNext={completeOnboarding} />} />
-          <Route path="*" element={<MainApp />} />
+          <Route path="*" element={<MainApp onLogout={handleLogout} />} />
         </>
       )}
     </Routes>
   );
 };
 
-const MainApp: React.FC = () => {
+const MainApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
@@ -100,14 +110,12 @@ const MainApp: React.FC = () => {
       <NewSidebar isOpen={isSidebarOpen} onToggleSidebar={onToggleSidebar} toggleDarkMode={toggleDarkMode} />
       <div className={`main-content content ${isSidebarOpen ? 'expanded' : 'collapsed'} ${isDarkMode ? "dark" : "light"}`}>
         <Routes>
-          <Route path="/home" element={<Home />} />
-          {/* <Route path="/chat" element={< />} /> */}
-          <Route path="/chat" element={<ChatPage/>} />
+          <Route path="/home" element={<Home onLogout={onLogout} />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/marketplace" element={<MarketPlace />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/*" element={<Navigate to="/home" />} />
         </Routes>
-        {/* <BorderBeam size={350} duration={12} delay={9} /> */}
       </div>
     </div>
   );

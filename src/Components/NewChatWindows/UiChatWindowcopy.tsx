@@ -3,8 +3,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import process from "../../Assets/Image/Infinity Loop (1).gif";
-import complete from "../../Assets/Image/output-onlinegiftools (1).gif";
+import complete from "../../Assets/Image/ezgif.com-crop.gif";
 import chainConfig from "./config";
+
 import "./NewChatWindows";
 import {
   FiStar,
@@ -15,6 +16,8 @@ import {
 } from "react-icons/fi";
 import profile from "../../Assets/Image/Young_Person-removebg-preview.png";
 import { format } from "date-fns"; // Add this import
+import TypingAnimation from "../../magicui/typing-animation";
+import NewChatWindows from "./NewChatWindows";
 interface ChainConfig {
   rpcEndpoint: string;
   prefix: string;
@@ -47,13 +50,8 @@ const testing = async (
         generatedText.substring(functionStart, functionEnd) + "\n}";
       console.log("Extracted function code:", functionCode);
 
-      const dynamicFunction = new Function(
-        "DirectSecp256k1HdWallet",
-        "SigningStargateClient",
-        "mnemonic",
-        "chainConfig",
-        functionCode
-      );
+      const dynamicFunction = eval(`(${functionCode})`);
+      console.log("dynamicFunction:", dynamicFunction);
       const proxyFunction = async (
         DirectSecp256k1HdWallet: any,
         SigningStargateClient: any,
@@ -62,6 +60,7 @@ const testing = async (
       ): Promise<any> => {
         console.log("inside proxy function");
         try {
+          console.log("inside dynamicFunction function");
           const result = await dynamicFunction(
             DirectSecp256k1HdWallet,
             SigningStargateClient,
@@ -127,15 +126,26 @@ const ChatPage: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
   const [walletName, setWalletName] = useState("");
+  // const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [chatSessions, setChatSessions] = useState<any[]>([]);
+  const [currentSessionIndex, setCurrentSessionIndex] = useState<number>(0);
+  ;
 
   const loadingGifUrl = process; // Replace with the actual path
   const completionGifUrl = complete; // Replace with the actual path
-  const staticBotImageUrl = "https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg"; // Replace with the actual path
+  const staticBotImageUrl = "https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg&w=640&q=75"; // Replace with the actual path
 
   useEffect(() => {
     const storedWalletName = localStorage.getItem("walletname");
     if (storedWalletName) {
       setWalletName(storedWalletName);
+    }
+    const storedChatSessions = localStorage.getItem("chatSessions");
+    if (storedChatSessions) {
+      setChatSessions(JSON.parse(storedChatSessions));
+      setCurrentSessionIndex(JSON.parse(storedChatSessions).length - 1);
+    } else {
+      setChatSessions([[]]); // Initialize with one empty session
     }
   }, []);
 
@@ -158,7 +168,7 @@ const ChatPage: React.FC = () => {
   const handleSend = async () => {
     const isTransaction = true;
     const mnemonic =
-      " sign public soldier jewel flavor bring you hand inject soft trust lens"; // Replace with actual mnemonic
+      "sign public soldier jewel flavor bring you hand inject soft trust lens"; // Replace with actual mnemonic
 
     if (inputValue.trim()) {
       const userMessage = {
@@ -166,12 +176,16 @@ const ChatPage: React.FC = () => {
         text: inputValue,
         time: format(new Date(), "hh:mm"),
       };
-      setMessages([...messages, userMessage]);
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages, userMessage];
+        saveChatSession(updatedMessages);
+        return updatedMessages;
+      });
       setInputValue("");
 
       const loadingMessage = {
         type: "loading",
-        text: "Loading...",
+        text: "Please wait while the system processes your command...",
         sender: "bot",
         timestamp: new Date(),
       };
@@ -195,27 +209,33 @@ const ChatPage: React.FC = () => {
             transactionHash,
             time: format(new Date(), "hh:mm"),
           };
-          setMessages((prevMessages) => [
-            ...prevMessages.slice(0, -1),
-            botReply,
-          ]);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages.slice(0, -1), botReply];
+            // saveChatHistory(updatedMessages);
+            saveChatSession(updatedMessages);
+            return updatedMessages;
+          });
           setTimeout(() => {
             setMessages((prevMessages) => {
               const updatedMessages = [...prevMessages];
               updatedMessages[updatedMessages.length - 1].type = "static";
+              // saveChatHistory(updatedMessages);
+              saveChatSession(updatedMessages);
               return updatedMessages;
             });
-          }, 2000);
+          }, 3000);
         } else {
           const botReply = {
             text: `Echo: ${inputValue}`,
             sender: "bot",
             timestamp: new Date(),
           };
-          setMessages((prevMessages) => [
-            ...prevMessages.slice(0, -1),
-            botReply,
-          ]);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages.slice(0, -1), botReply];
+            // saveChatHistory(updatedMessages);
+            saveChatSession(updatedMessages);
+            return updatedMessages;
+          });
         }
       } catch (error) {
         console.error("Error:", error);
@@ -224,7 +244,12 @@ const ChatPage: React.FC = () => {
           sender: "bot",
           timestamp: new Date(),
         };
-        setMessages((prevMessages) => [...prevMessages.slice(0, -1), botReply]);
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages.slice(0, -1), botReply];
+          saveChatSession(updatedMessages);
+          // saveChatHistory(updatedMessages);
+          return updatedMessages;
+        });
       }
 
       setLoading(false);
@@ -237,12 +262,48 @@ const ChatPage: React.FC = () => {
         setCopy(true);
         setTimeout(() => {
           setCopy(false);
-        }, 3000);
+        }, 4000);
       },
       (err) => {
         console.error("Could not copy text: ", err);
       }
     );
+  };
+
+  // const saveChatHistory = (messages: any[]) => {
+  //   localStorage.setItem("chatHistory", JSON.stringify(messages));
+  //   setChatHistory(messages);
+  // };
+
+  // const clearChatHistory = () => {
+  //   localStorage.removeItem("chatHistory");
+  //   setChatHistory([]);
+  // };
+
+  const saveChatSession = (messages: any[]) => {
+    const updatedSessions = [...chatSessions];
+    updatedSessions[currentSessionIndex] = messages;
+    localStorage.setItem("chatSessions", JSON.stringify(updatedSessions));
+    setChatSessions(updatedSessions);
+  };
+
+  const startNewChatSession = () => {
+    const newSessionIndex = chatSessions.length;
+    setChatSessions([...chatSessions, []]);
+    setCurrentSessionIndex(newSessionIndex);
+    setMessages([]);
+  };
+
+  const selectChatSession = (index: number) => {
+    setCurrentSessionIndex(index);
+    setMessages(chatSessions[index]);
+  };
+
+  const clearChatHistory = () => {
+    localStorage.removeItem("chatSessions");
+    setChatSessions([[]]);
+    setMessages([]);
+    setCurrentSessionIndex(0);
   };
 
   const notifications = [
@@ -296,10 +357,10 @@ const ChatPage: React.FC = () => {
   return (
     <div className="flex max-h-full overflow-none">
       {/* Left Section - Chat Window */}
-      <div className="min-w-2.3/3 flex-grow flex flex-col border-r border-gray-200 shadow-2xl">
+      <div className="w-2/3 flex-grow flex flex-col border-r border-gray-200 shadow-2xl">
         {/* Nav Section */}
         <div className="flex items-center justify-between py-5 px-9 border-b border-gray-200 shadow-2xl shadow-gray-300/40">
-          <h1 className="text-xl font-semibold">Hello</h1>
+          <h1 className="text-xl font-semibold">Chat</h1>
           <div className="flex items-center space-x-5">
             <FiStar className="cursor-pointer" />
             <FiShare2 className="cursor-pointer" />
@@ -309,21 +370,32 @@ const ChatPage: React.FC = () => {
 
         {/* Main Chat Section */}
         <div className=" px-9 relative z-2 grow p-10 space-y-10 overflow-y-auto scroll-smooth scrollbar-none h-[100vh]">
-          {messages.map((message, index) => (
+        {messages.length === 0 ? (
+    <div className="flex justify-center items-center h-full">
+      {/* <p className="text-gray-400 text-lg">Start conversation with AI</p> */}
+      <NewChatWindows/>
+    </div>
+  ) : (
+          messages.map((message, index) => (
             <div
               key={index}
-              className={`mb-9 max-w-[50rem] ${
+              className={`mb-9 max-w-[46rem] ${
                 message.type === "user" ? " ml-auto" : ""
               }`}
             >
               <div
-                className={`inline-block rounded-[20px] w-[50rem] ${
+                className={`inline-block rounded-[20px] w-[46rem] ${
                   message.type === "user"
-                    ? "space-y-6 pt-6 px-6 pb-20 border-2  md:p-5 md:px-6 md:pb-14 border-gray-200 font-medium"
-                    : "pt-6 px-6 pb-6 space-y-4 md:p-5 md:pb-14 font-medium bg-gray-200 "
+                    ? "space-y-6 pt-6 px-6 pb-20 border-2 md:p-5 md:px-6 md:pb-14 border-gray-200 font-medium"
+                    : "pt-6 px-6 pb-6 space-y-4 md:p-5 md:pb-14 font-medium bg-gray-200"
                 }`}
               >
-                {message.text}
+
+            
+                    
+                  {message.text}
+                  
+                
               </div>
               <div className="text-xs text-gray-400 mt-1">
                 {message.type === "user" ? (
@@ -355,7 +427,7 @@ const ChatPage: React.FC = () => {
                               : staticBotImageUrl
                           }
                           alt="Bot"
-                          className="inline-block align-top transition-opacity opacity-100 object-cover"
+                          className="inline-block align-top transition-opacity bg-white opacity-100 object-contain"
                           loading="lazy"
                         />
                       </div>
@@ -386,7 +458,8 @@ const ChatPage: React.FC = () => {
                 )}
               </div>
             </div>
-          ))}
+          )))}
+
         </div>
 
         {/* Input Box */}
@@ -430,8 +503,8 @@ const ChatPage: React.FC = () => {
       </div>
 
       {/* Right Section - Notifications and Chat History */}
-      <div className="w-0.7/3 flex flex-col">
-        <div className="flex items-center justify-between py-[16px] px-7 border-b border-gray-200">
+      <div className="w-1/3 flex flex-col flex-grow">
+        <div className="flex items-center justify-between w-full py-[16px] px-7 border-b border-gray-200">
           <div className="flex items-center space-x-2">
             <FiShare2 className="cursor-pointer" />
           </div>
@@ -538,36 +611,67 @@ const ChatPage: React.FC = () => {
           {/* notification  */}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-7 ">
+        <div className="flex-1 overflow-y-auto p-7 w-full ">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <h2 className="text-base text-gray-400 font-semibold">
                 Chat History
               </h2>
               <span className="text-xs rounded-lg px-2 py-[2px] font-medium text-gray-600 bg-gray-300 ">
-                26/100
+                {/* {chatHistory.length}/100 */}
+                {chatSessions.length}/100
               </span>
             </div>
-
-            <FiTrash2 className="cursor-pointer" />
+            <FiTrash2 className="cursor-pointer" onClick={clearChatHistory} />
           </div>
           {/* Chat History List */}
           <div className="w-full mt-8 mb-5">
-            <div className="flex items-center justify-between mb-4 rounded-2xl border-2 px-4 py-3 bg-white">
-              <div className="pr-5">
-                <h3 className="text-base font-semibold">Executor AI UI Kit</h3>
-                <p className="text-xs font-medium text-gray-400">
-                  Write code (HTML, CSS and JS) for a simple...
-                </p>
+            {/* {chatHistory.map((message, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between mb-4 rounded-2xl border-2 px-4 py-3 bg-white"
+              >
+                <div className="pr-5">
+                  <h3 className="text-base font-semibold">
+                    {message.type === "user" ? "You" : "Bot"}
+                  </h3>
+                  <p className="text-xs font-medium text-gray-400">
+                    {message.text}
+                  </p>
+                </div>
+                
               </div>
-              <img src={profile} alt="User" className="w-8 h-8 rounded-full" />
-            </div>
-            {/* Repeat for other chat history items */}
+              
+            ))} */}
+            {messages.length === 0 ? (
+    <div className="flex justify-center items-center content-center h-full">
+      <p className="text-gray-400 text-base text-center">No history available</p>
+    </div>
+  ) : (
+            chatSessions.map((session, index) => (
+              <div
+                key={index}
+                onClick={() => selectChatSession(index)}
+                className="flex items-center justify-between mb-4 rounded-2xl border-2 px-4 py-3 bg-white cursor-pointer"
+              >
+                <div className="pr-5">
+                  <h3 className="text-base font-semibold">Chat Session {index + 1}</h3>
+                  <p className="text-xs font-medium text-gray-400">
+                    {session.length > 0 ? session[0].text : "Empty Session"}
+                  </p>
+                </div>
+                {/* <img
+                  src={session.length > 0 && session[0].type === "user" ? profile : staticBotImageUrl}
+                  alt="User"
+                  className="w-8 h-8 rounded-full"
+                /> */}
+              </div>
+            )))}
           </div>
         </div>
 
         <div className="p-7">
-          <button className="w-full h-14 bg-blue-500 px-7 text-white py-2 rounded-xl">
+          <button onClick={startNewChatSession} className="w-full h-14 bg-blue-500 px-7 text-white py-2 rounded-xl">
             New Chat
           </button>
         </div>

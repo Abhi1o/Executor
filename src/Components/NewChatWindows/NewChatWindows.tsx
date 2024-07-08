@@ -10,20 +10,15 @@ const NewChatWindows: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen py-6 pb-14 text-slate-800">
-      <div className="flex-1 flex flex-col items-center justify-center grow md:pt-18 w-2/3 bg-white p-8">
-        {currentChat ? (
-          <ChatWindow chatType={currentChat} />
-        ) : (
+    <div className="flex  py-6 pb-14 text-slate-800">
+      <div className="flex-1 flex flex-col items-center justify-center  grow md:pt-18  p-8">
+        
           <MainChat startChat={startChat} />
-        )}
+       
 
-        {renderChatBox()}
+        
       </div>
-      <hr className="h-screen border-y-gray-400" />
-      <div className="w-1/3 bg-gray-400 p-4">
-        <RightSidebar />
-      </div>
+      
     </div>
   );
 };
@@ -35,7 +30,7 @@ interface MainChatProps {
 const MainChat: React.FC<MainChatProps> = ({ startChat }) => {
   return (
     <>
-      <div className="grow px-10 py-20 overflow-y-auto scroll-smooth scrollbar-none 2xl:py-12 md:px-4 md:pt-0 md:pb-6">
+      <div className=" grow px-10 py-20 w-full overflow-y-auto scroll-smooth scrollbar-none m-auto">
         <div className="mb-10 text-center">
           <div className="h3 leading-[4rem] 2xl:mb-2 2xl:h4 text-3xl font-bold mb-4">
             Unlock the power of AI
@@ -47,17 +42,37 @@ const MainChat: React.FC<MainChatProps> = ({ startChat }) => {
         <div className="max-w-[30.75rem] mx-auto">
           <PageLink
             onClick={() => startChat("Photo editing")}
-            color="#8E55EA"
-            label="Photo editing"
-            svg="M12 1.995a1 1 0 0 1 .117 1.993L12 3.995l-5.232.001-1.357.037c-.438.036-.663.101-.819.18a2 2 0 0 0-.874.874c-.08.156-.145.381-.18.819-.029.35-.035.78-.037 1.357v9.464l.037 1.357c.036.438.101.663.18.819a2 2 0 0 0 .801.835c.086-.135.179-.238.24-.304.114-.123.258-.259.414-.402l.158-.144 8.508-7.735.466-.405a2.01 2.01 0 0 1 .619-.343 2 2 0 0 1 1.115-.035c.261.067.47.187.64.303l.322.24.169.134 2.831 2.265c.366.292.689.55.93.882a3 3 0 0 1 .463.964c.087.316.104.643.107 1.002v.275.568c0 .671.039 1.372-.136 2.026a4 4 0 0 1-2.828 2.828c-.448.12-.956.135-1.609.136H6.531c-.258 0-.508 0-.718-.014l-.566-.031c-.562-.046-1.079-.145-1.564-.392a4 4 0 0 1-1.748-1.748c-.247-.485-.346-1.002-.392-1.564-.038-.464-.043-1.018-.044-1.674V7.417l.044-1.674c.046-.562.144-1.079.392-1.564a4 4 0 0 1 1.748-1.748c.485-.247 1.002-.346 1.564-.392.464-.038 1.018-.043 1.674-.044H12zm-4 3.5a3 3 0 1 1 0 6 3 3 0 1 1 0-6zm14.207-3.207a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L17.5 5.581l3.293-3.293a1 1 0 0 1 1.414 0z"
+            color="yellow"
+            label="Cosmos Transaction"
+            svg="M 50,5
+    A 45,45 0 0 1 95,50
+    A 45,45 0 0 1 50,95
+    A 45,45 0 0 1 5,50
+    A 45,45 0 0 1 50,5
+    M 50,0
+    A 50,50 0 0 0 0,50
+    A 50,50 0 0 0 50,100
+    A 50,50 0 0 0 100,50
+    A 50,50 0 0 0 50,0
+    Z
+    M 30,50
+    A 20,20 0 0 1 50,30
+    A 20,20 0 0 1 70,50
+    A 20,20 0 0 1 50,70
+    A 20,20 0 0 1 30,50
+    Z
+    M 20,50
+    L 80,50
+    M 50,20
+    L 50,80"
           />
           <PageLink
             onClick={() => startChat("Video generation")}
-            color="#D84C10"
-            label="Video generation"
-            svg="M11.998.998c6.075 0 11 4.925 11 11s-4.925 11-11 11-11-4.925-11-11 4.925-11 11-11zM9.962 7.915a.5.5 0 0 0-.365.199c-.1.133-.1.372-.1.849v6.069c0 .477 0 .716.1.849a.5.5 0 0 0 .365.199c.166.012.367-.117.768-.375l4.721-3.035c.348-.224.523-.336.583-.478a.5.5 0 0 0 0-.389c-.06-.142-.234-.254-.583-.478L10.73 8.29c-.401-.258-.602-.387-.768-.375z"
+            color="#52BA69"
+            label="Chat AI"
+            svg="M11.541 1.245a2 2 0 0 1 .914 0c.348.082.652.281.893.439h0l8.522 5.54c.206.133.465.3.662.536a2 2 0 0 1 .377.695c.09.294.089.602.089.847v5.551c-.002.214-.016.458-.088.693a2 2 0 0 1-.377.695c-.197.236-.456.403-.662.536h0l-8.522 5.54c-.242.158-.545.358-.893.439a2 2 0 0 1-.914 0c-.348-.082-.652-.281-.893-.439h0l-8.523-5.54c-.206-.133-.465-.3-.662-.536a2 2 0 0 1-.377-.695c-.09-.294-.089-.602-.089-.847V9.148c.002-.214.016-.458.088-.693a2 2 0 0 1 .377-.695c.197-.236.456-.403.662-.536h0l8.523-5.54c.242-.158.545-.358.893-.439zm-8.543 9.097l.004 4.612 7.996 5.202v-4.624l-8-5.19zm18 0l-8 5.19v4.624l7.996-5.207.004-4.607z"
           />
-          <PageLink
+          {/* <PageLink
             onClick={() => startChat("Education feedback")}
             color="#0084FF"
             label="Education feedback"
@@ -74,7 +89,7 @@ const MainChat: React.FC<MainChatProps> = ({ startChat }) => {
             color="#E68A1D"
             label="Audio generation"
             svg=""
-          />
+          /> */}
         </div>
       </div>
     </>
@@ -95,7 +110,7 @@ const PageLink: React.FC<PageLinkProps> = ({ color, label, onClick, svg }) => (
   >
     <div className="relative flex justify-center items-center w-15 h-15 mr-6">
       <div className="absolute inset-0 opacity-20 rounded-xl" style={{ backgroundColor: color }}></div>
-      <svg className="inline-block w-14 h-14 relative z-1" width="24" height="24" viewBox="0 0 24 24">
+      <svg className="inline-block w-14 h-14 relative z-1" width="2" height="2" viewBox="0 0 24 24">
         <path fill={color} d={svg} />
       </svg>
     </div>
@@ -106,30 +121,6 @@ const PageLink: React.FC<PageLinkProps> = ({ color, label, onClick, svg }) => (
   </div>
 );
 
-const renderChatBox = () => (
-  <div className="relative z-5 px-10 pb-6 dark:bg-n-6">
-    <div className="relative z-2 border-2 border-n-3 rounded-xl overflow-hidden dark:border-n-5">
-      <div className="relative flex items-center min-h-[3.5rem] px-16 text-0">
-        <button className="group absolute left-3 bottom-2 w-10 h-10 outline-none">
-          <svg className="inline-block w-7 h-7 fill-[#7F8689] transition-colors group-hover:fill-primary-1 dark:fill-n-4" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M12 3a9 9 0 1 1 0 18 9 9 0 1 1 0-18zm0 4.25a.75.75 0 0 0-.75.75h0v3.25H8l-.102.007A.75.75 0 0 0 8 12.75h0 3.25V16l.007.102A.75.75 0 0 0 12.75 16h0v-3.25H16l.102-.007A.75.75 0 0 0 16 11.25h0-3.25V8l-.007-.102A.75.75 0 0 0 12 7.25z"></path>
-          </svg>
-        </button>
-        <input
-          type="text"
-          className="text-black w-full py-3 bg-transparent body2 text-n-7 outline-none resize-none placeholder:text-n-4/75 dark:text-n-1 dark:placeholder:text-n-4"
-          placeholder="Ask Me anything"
-          style={{ height: '48px' }}
-        />
-        <button className="group absolute right-3 bottom-2 w-10 h-10">
-          <svg className="inline-block w-6 h-6 fill-n-4 transition-colors group-hover:fill-primary-1" width="24" height="24" viewBox="0 0 24 24">
-            <path d="M3 9a1 1 0 0 1 .993.883L4 10v4a1 1 0 0 1-1.993.117L2 14v-4a1 1 0 0 1 1-1zm4.5-4a1 1 0 0 1 .993.883L8.5 6v12a1 1 0 0 1-1.993.117L6.5 18V6a1 1 0 0 1 1-1zM12 2a1 1 0 0 1 .993.883L13 3v18a1 1 0 0 1-1.993.117L11 21V3a1 1 0 0 1 1-1zm4.5 3a1 1 0 0 1 .993.883L17.5 6v12a1 1 0 0 1-1.993.117L15.5 18V6a1 1 0 0 1 1-1zM21 9a1 1 0 0 1 .993.883L22 10v4a1 1 0 0 1-1.993.117L20 14v-4a1 1 0 0 1 1-1z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-);
 
 // interface CardProps {
 //   title: string;

@@ -2,6 +2,15 @@
 @import 'tailwindcss/tailwind.css';
 .welcome{
 
+.dcube{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  // background-color: ;
+  margin: 0;
+  padding: 0;
+}
 
 .glass-effect {
   background: rgba(255, 255, 255, 0.827);

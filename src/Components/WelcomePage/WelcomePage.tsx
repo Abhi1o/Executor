@@ -6,6 +6,7 @@ import { cn } from "../../lib/utils";
 import ShimmerButton from "../../magicui/shimmer-button";
 import {BorderBeam} from "../../magicui/border-beam";
 import AnimatedGridPattern from "../../magicui/animated-grid-pattern";
+import FuturisticCube from "../../magicui/FuturisticCube";
 type WelcomePageProps = {
   onNext: () => void
 
@@ -94,7 +95,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onNext }) => {
           <AnimatedGridPattern
             numSquares={130}
             maxOpacity={0.1}
-            duration={3}
+            duration={1}
             repeatDelay={1}
             className={cn(
               "[mask-image:radial-gradient(10000px_circle_at_center,white,transparent)]",
@@ -104,7 +105,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onNext }) => {
 
           <div className="relative p-6 w-[45%] fade-in-right">
             <div className="absolute top-5 right-5 mt-4 mr-4"></div>
-
+            <div className="dcube"><FuturisticCube/></div>
             <div className="absolute bottom-9 left-0 right-0 mb-4 mx-4 flex items-center justify-center">
               <div className="relative p-1 w-[88%] bg-white/80 rounded-xl shadow-lg flex items-center">
                 <div className="p-2">
