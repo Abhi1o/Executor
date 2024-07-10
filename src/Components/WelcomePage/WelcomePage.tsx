@@ -105,7 +105,7 @@ const WelcomePage: React.FC<WelcomePageProps> = ({ onNext }) => {
 
           <div className="relative p-6 w-[45%] fade-in-right">
             <div className="absolute top-5 right-5 mt-4 mr-4"></div>
-            <div className="dcube"><FuturisticCube/></div>
+            {/* <div className="dcube"><FuturisticCube/></div> */}
             <div className="absolute bottom-9 left-0 right-0 mb-4 mx-4 flex items-center justify-center">
               <div className="relative p-1 w-[88%] bg-white/80 rounded-xl shadow-lg flex items-center">
                 <div className="p-2">

@@ -13,7 +13,18 @@ import WalletLogin from './Components/walletLogin/WalletLogin';
 import Home from './Components/Main/Main';
 import MarketPlace from './Components/MarketPlace/MarketPlace';
 import ChatPage from './Components/NewChatWindows/UiChatWindowcopy';
+import SolanaChatApp from './Components/NewChatWindows/solana';
+import SendToken from './Components/NewChatWindows/solanasendtokend';
+import WalletPage from './Components/WalletPage/WalletPage';
+// import AgentComponent from './Components/NewChatWindows/AgentComponents';
 
+interface Agent {
+  id: string;
+  name: string;
+  type: string;
+  action: string;
+  icon: string;
+}
 const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -21,6 +32,7 @@ const App: React.FC = () => {
   const action = useNavigationType();
   const location = useLocation();
   const pathname = location.pathname;
+  
 
   useEffect(() => {
     if (action !== "POP") {
@@ -95,6 +107,35 @@ const App: React.FC = () => {
 const MainApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  // const [selectedAgents, setSelectedAgents] = useState<Agent[]>([]);
+
+  // const handleSelectAgent = (agent: Agent) => {
+  //   if (!selectedAgents.some(a => a.name === agent.name)) {
+  //     setSelectedAgents([...selectedAgents, agent]);
+  //   }
+  // };
+
+  const [selectedAgents, setSelectedAgents] = useState<Agent[]>(() => {
+    const storedAgents = localStorage.getItem('selectedAgents');
+    return storedAgents ? JSON.parse(storedAgents) : [];
+  });
+
+  const handleSelectAgent = (agent: Agent) => {
+    setSelectedAgents(prevAgents => {
+      const newAgents = [...prevAgents, agent];
+      localStorage.setItem('selectedAgents', JSON.stringify(newAgents));
+      return newAgents;
+    });
+  };
+  
+  const handleRemoveAgent = (agentId: string) => {
+    setSelectedAgents(prevAgents => {
+      const updatedAgents = prevAgents.filter(agent => agent.id !== agentId);
+      localStorage.setItem('selectedAgents', JSON.stringify(updatedAgents));
+      return updatedAgents;
+    });
+  };
+
 
   const onToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -111,9 +152,15 @@ const MainApp: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
       <div className={`main-content content ${isSidebarOpen ? 'expanded' : 'collapsed'} ${isDarkMode ? "dark" : "light"}`}>
         <Routes>
           <Route path="/home" element={<Home onLogout={onLogout} />} />
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/marketplace" element={<MarketPlace />} />
+          <Route path="/chat" element={<ChatPage selectedAgents={selectedAgents} removeAgent={handleRemoveAgent}
+    />} />
+          <Route path="/marketplace" element={<MarketPlace 
+      onSelectAgent={handleSelectAgent}
+      selectedAgents={selectedAgents} // Pass this prop
+    />} />
+          
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/wallet" element={<WalletPage/>} />
           <Route path="/*" element={<Navigate to="/home" />} />
         </Routes>
       </div>

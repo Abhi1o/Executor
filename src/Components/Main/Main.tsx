@@ -97,9 +97,9 @@ const Main: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   };
 
   const cryptos = [
-    { name: 'Cosmos ',token:" ATOM", price: 56703.20, icon: cosmos},
-    { name: 'Comdex ',token:" CMDX", price: 2962.03, icon: comdex },
-    { name: 'Solana ',token:" SOL", price: 0.9999, icon: solana },
+    { name: 'Cosmos ',token:" ATOM", price: 0, icon: cosmos},
+    { name: 'Comdex ',token:" CMDX", price: 0, icon: comdex },
+    { name: 'Solana ',token:" SOL", price: 0, icon: solana },
   ];
 
   const totalValue = cryptos.reduce((acc, crypto) => acc + crypto.price, 0).toFixed(2);
@@ -304,10 +304,10 @@ const Main: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
                 <td className="text-right py-2 px-4 font-semibold text-gray-800">${crypto.price.toFixed(2)}</td>
               </tr>
             ))}
-            <tr className="border-t mb-2">
+            {/* <tr className="border-t mb-2">
               <td className="py-4 px-4 font-semibold text-gray-800">Total Value</td>
               <td className="py-4 px-4 font-semibold text-gray-800 text-right">${totalValue}</td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>

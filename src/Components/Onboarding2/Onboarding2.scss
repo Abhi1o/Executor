@@ -1,5 +1,36 @@
 .onboarding2 {
+  .copy-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  
+    &:hover {
+      background-color: #0056b3;
+    }
+  
+    &:focus {
+      outline: none;
+    }
+  }
 
+  .mnemonic-phrase {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
 .glass-effect {
   background: rgba(255, 255, 255, 0.827);
   backdrop-filter: blur(10px);
@@ -30,7 +61,7 @@
   }
   
   .btn-3d:hover {
-    transform: translateY(-5px);
+    // transform: translateY(-5px);
     
   }
   .btn-3dpurple{

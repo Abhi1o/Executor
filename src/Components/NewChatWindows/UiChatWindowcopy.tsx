@@ -5,8 +5,13 @@ import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import process from "../../Assets/Image/Infinity Loop (1).gif";
 import complete from "../../Assets/Image/ezgif.com-crop.gif";
 import chainConfig from "./config";
-
+import solana from "../../Assets/Image/solana-logo.png";
+import comdex from "../../Assets/Image/comdex.png";
+import coins from "../../Assets/Image/Cosmos__1_-removebg-preview.png";
+import cosmos from "../../Assets/Image/Consortium_Blockchain-removebg-preview.png";
 import "./NewChatWindows";
+import AgentComponent from "./AgentComponents";
+
 import {
   FiStar,
   FiShare2,
@@ -25,6 +30,20 @@ interface ChainConfig {
   feeAmount: string;
   gas: string;
 }
+interface Agent {
+  id:string;
+  name: string;
+  type: string;
+  action: string;
+  icon: string;
+}
+
+interface ChatPageProps {
+  selectedAgents: Agent[];
+  removeAgent: (agentId: string) => void;
+}
+
+// cosmos send tx logic 
 const testing = async (
   input: string,
   mnemonic: string,
@@ -114,7 +133,7 @@ const testing = async (
   }
 };
 
-const ChatPage: React.FC = () => {
+const ChatPage: React.FC<ChatPageProps> = ({ selectedAgents, removeAgent }) => {
   const [copy, setCopy] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
@@ -129,11 +148,10 @@ const ChatPage: React.FC = () => {
   // const [chatHistory, setChatHistory] = useState<any[]>([]);
   const [chatSessions, setChatSessions] = useState<any[]>([]);
   const [currentSessionIndex, setCurrentSessionIndex] = useState<number>(0);
-  ;
-
   const loadingGifUrl = process; // Replace with the actual path
   const completionGifUrl = complete; // Replace with the actual path
-  const staticBotImageUrl = "https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg&w=640&q=75"; // Replace with the actual path
+  const staticBotImageUrl =
+    "https://ui8-brainwave.herokuapp.com/_next/image?url=%2Fimages%2Favatar-chat.jpg&w=640&q=75"; // Replace with the actual path
 
   useEffect(() => {
     const storedWalletName = localStorage.getItem("walletname");
@@ -165,6 +183,8 @@ const ChatPage: React.FC = () => {
     };
   }, [popupRef]);
 
+  const containerRef = useRef(null);
+
   const handleSend = async () => {
     const isTransaction = true;
     const mnemonic =
@@ -185,7 +205,7 @@ const ChatPage: React.FC = () => {
 
       const loadingMessage = {
         type: "loading",
-        text: "Please wait while the system processes your command...",
+        text: "Please wait 4 to 5 min while the system processes your command...",
         sender: "bot",
         timestamp: new Date(),
       };
@@ -255,6 +275,10 @@ const ChatPage: React.FC = () => {
       setLoading(false);
     }
   };
+  console.log('Selected Agents:', selectedAgents);
+  const username = localStorage.getItem("walletname");
+  const publickey = localStorage.getItem("address");
+  const balance = localStorage.getItem("balance");
 
   const handleHashCopy = (transactionHash: string) => {
     navigator.clipboard.writeText(transactionHash).then(
@@ -269,6 +293,17 @@ const ChatPage: React.FC = () => {
       }
     );
   };
+  const apps = [
+    { name: "Cosmos", type: "Productivity", action: "Added", icon: coins },
+    {
+      name: "BlockChain",
+      type: "Productivity",
+      action: "Coming Soon",
+      icon: cosmos,
+    },
+
+    // Add more apps as needed
+  ];
 
   // const saveChatHistory = (messages: any[]) => {
   //   localStorage.setItem("chatHistory", JSON.stringify(messages));
@@ -368,35 +403,54 @@ const ChatPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Chat Section */}
+        {/* Main Chat window */}
         <div className=" px-9 relative z-2 grow p-10 space-y-10 overflow-y-auto scroll-smooth scrollbar-none h-[100vh]">
-        {messages.length === 0 ? (
-    <div className="flex justify-center items-center h-full">
-      {/* <p className="text-gray-400 text-lg">Start conversation with AI</p> */}
-      <NewChatWindows/>
-    </div>
-  ) : (
-          messages.map((message, index) => (
+          {/*agent prompt message */}
+          <div className=" relative pt-6 px-6 pb-6 space-y-4 md:p-5 md:pb-12 font-medium bg-gray-200 rounded-2xl text-slate-700">
+            <p className="pl-1 ">
+              Hello, {username}. This interface serves as a Cosmos agent
+              designated for the execution of SEND token. Please find below your
+              public address and the associated balance:
+            </p>
+            <div style={{ marginTop: "10px", padding: "10px" }}>
+              <p>
+                <strong>Public Address:</strong> {publickey}
+              </p>
+              <p>
+                <strong>Balance:</strong> {balance}
+              </p>
+            </div>
+            <div className="absolute ">
+              <div className=" shrink-0 w-14 h-14 mr-auto rounded-2xl overflow-hidden shadow-[0_0_0_0.25rem_#FEFEFE] ">
+                <img
+                  src={staticBotImageUrl}
+                  alt="Bot"
+                  className="inline-block align-top transition-opacity bg-white opacity-100 object-contain"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+          {/* user and chat messages */}
+          {messages.map((message, index) => (
             <div
               key={index}
               className={`mb-9 max-w-[46rem] ${
                 message.type === "user" ? " ml-auto" : ""
               }`}
             >
+              {/* message */}
               <div
                 className={`inline-block rounded-[20px] w-[46rem] ${
                   message.type === "user"
                     ? "space-y-6 pt-6 px-6 pb-20 border-2 md:p-5 md:px-6 md:pb-14 border-gray-200 font-medium"
-                    : "pt-6 px-6 pb-6 space-y-4 md:p-5 md:pb-14 font-medium bg-gray-200"
+                    : "pt-6 px-6 pb-6 space-y-4 md:p-5 md:pb-14 md:px-6 font-medium bg-gray-200"
                 }`}
               >
-
-            
-                    
-                  {message.text}
-                  
-                
+                {message.text}
               </div>
+
+              {/* message bottom details  */}
               <div className="text-xs text-gray-400 mt-1">
                 {message.type === "user" ? (
                   <>
@@ -458,8 +512,7 @@ const ChatPage: React.FC = () => {
                 )}
               </div>
             </div>
-          )))}
-
+          ))}
         </div>
 
         {/* Input Box */}
@@ -504,6 +557,7 @@ const ChatPage: React.FC = () => {
 
       {/* Right Section - Notifications and Chat History */}
       <div className="w-1/3 flex flex-col flex-grow">
+        {/* notification, prifile */}
         <div className="flex items-center justify-between w-full py-[16px] px-7 border-b border-gray-200">
           <div className="flex items-center space-x-2">
             <FiShare2 className="cursor-pointer" />
@@ -610,7 +664,7 @@ const ChatPage: React.FC = () => {
           </div>
           {/* notification  */}
         </div>
-
+        {/* chat history  */}
         <div className="flex-1 overflow-y-auto p-7 w-full ">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -643,38 +697,141 @@ const ChatPage: React.FC = () => {
               </div>
               
             ))} */}
-            {messages.length === 0 ? (
-    <div className="flex justify-center items-center content-center h-full">
-      <p className="text-gray-400 text-base text-center">No history available</p>
-    </div>
-  ) : (
-            chatSessions.map((session, index) => (
-              <div
-                key={index}
-                onClick={() => selectChatSession(index)}
-                className="flex items-center justify-between mb-4 rounded-2xl border-2 px-4 py-3 bg-white cursor-pointer"
-              >
-                <div className="pr-5">
-                  <h3 className="text-base font-semibold">Chat Session {index + 1}</h3>
-                  <p className="text-xs font-medium text-gray-400">
-                    {session.length > 0 ? session[0].text : "Empty Session"}
-                  </p>
-                </div>
-                {/* <img
+            {chatSessions.length === 0 ? (
+              <div className="flex justify-center items-center content-center h-full">
+                <p className="text-gray-400 text-base text-center">
+                  No history available
+                </p>
+              </div>
+            ) : (
+              chatSessions.map((session, index) => (
+                <div
+                  key={index}
+                  onClick={() => selectChatSession(index)}
+                  className="flex items-center justify-between mb-4 rounded-2xl border-2 px-4 py-3 bg-white cursor-pointer"
+                >
+                  <div className="pr-5">
+                    <h3 className="text-base font-semibold text-gray-400">
+                      {session.length > 0
+                        ? session[0].text
+                        : "No history available "}
+                    </h3>
+                  </div>
+                  {/* <img
                   src={session.length > 0 && session[0].type === "user" ? profile : staticBotImageUrl}
                   alt="User"
                   className="w-8 h-8 rounded-full"
                 /> */}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+        <hr></hr>
+        
+        {/* list of agents  */}
+        {/* <div className="selected-agents">
+        <h2>Selected Agents</h2>
+        {selectedAgents.map((agent) => (
+          <div key={agent.id} className="agent-item">
+            <img src={agent.icon} alt={agent.name} className="agent-icon" />
+            <span>{agent.name}</span>
+            <button onClick={() => removeAgent(agent.id)}>Remove</button>
+          </div>
+        ))}
+      </div> */}
+        {/* <div className="min-h-screen p-5 pt-8">
+      <h2 className="text-2xl font-bold mb-7 mt-9">Selected Agents</h2>
+      <div className="space-y-4">
+        {selectedAgents.map((agent, index) => (
+          <div key={agent.id} className="bg-gray-100 p-4 rounded-xl flex items-center justify-between">
+            <img src={agent.icon} alt={`${agent.name} Icon`} className="w-12 h-12 mr-4" />
+            <div>
+              <h3 className="text-xl font-semibold">{agent.name}</h3>
+              <p className="text-gray-400 text-base font-normal">{agent.type}</p>
+            </div>
+            <button
+              className="btn-3d bg-red-500 hover:bg-red-400 text-base font-semibold"
+              onClick={() => removeAgent(agent.id)}
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+      </div>
+    </div> */}
+    {/* <div className="w-1/3 flex-grow-0 flex-shrink-0 flex flex-col bg-gray-100 p-4">
+        <div className="flex items-center justify-between border-b pb-4 mb-4">
+          <h2 className="text-lg font-semibold">Selected Agents</h2>
+        </div>
+        <div>
+          {selectedAgents.map((agent) => (
+            <div
+              key={agent.id}
+              className="flex items-center justify-between py-2 px-4 bg-white rounded-lg shadow-md mb-2"
+            >
+              <span>{agent.name}</span>
+              <button onClick={() => removeAgent(agent.id)}>Remove</button>
+            </div>
+          ))}
+        </div>
+        
+      </div> */}
+
+
+
+        <div className="flex-1 overflow-y-auto p-7 w-full ">
+          <h1 className="text-2xl font-bold mb-7 fixed bg-white z-10">Agents</h1>
+
+          <div className="border-b p-4  rounded-2xl shadow-inner grid grid-flow-row grid-cols-1 grid-rows-2 scroll-smooth scrollbar-none mt-16  gap-8 overflow-y-auto ">
+
+          {selectedAgents.length === 0 ? (
+            <div className="flex justify-center items-center content-center ">
+              <p className="text-gray-400 text-base text-center">
+                No agents selected
+              </p>
+            </div>
+          ):(
+
+          selectedAgents.map((agent) => (
+              <div
+                key={agent.id}
+                className="bg-gray-100 bg-transparent border border-gradient-to-r from-gray-700 to-gray-300 rounded-xl p-4 min-w-[300px]  flex-shrink flex items-center content-center justify-between space-x-4 transition transform hover:scale-105 hover:shadow-md"
+                ref={containerRef}
+              >
+                <div className="flex items-center gap-6">
+                  <img
+                    src={agent.icon}
+                    alt={`${agent.name} Icon`}
+                    className="w-16 h-16"
+                  />
+                  <div>
+                    <h3 className="text-xl font-semibold">{agent.name}</h3>
+                    <p className="text-gray-400 text-base font-normal">
+                      {agent.type}
+                    </p>
+                  </div>
+                </div>
+                <button onClick={() => removeAgent(agent.id)} className={` btn-3d text-base font-semibold `}>
+                Remove
+                </button>
               </div>
             )))}
           </div>
         </div>
 
-        <div className="p-7">
-          <button onClick={startNewChatSession} className="w-full h-14 bg-blue-500 px-7 text-white py-2 rounded-xl">
+        {/* <AgentComponent selectedAgents={[]} removeAgent={function (agent: Agent): void {
+          throw new Error("Function not implemented.");
+        } }/> */}
+
+        {/* <div className="p-7">
+          <button
+            onClick={startNewChatSession}
+            className="w-full h-14 bg-blue-500 px-7 text-white py-2 rounded-xl"
+          >
             New Chat
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
